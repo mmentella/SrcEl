@@ -1,0 +1,29 @@
+Inputs: alpha(NumericSimple),beta(NumericSimple),omega(NumericSimple);
+
+vars: sigma2(0),return(0),yreturn(0),garch(0),new(0),old(0),daycount(0);
+
+if bartype_ex < -4 then begin
+
+ if d > d[1] then begin
+  
+  
+   
+ end;
+
+end else begin
+ 
+ old = c[1];
+ new = c;
+ 
+ if old <> 0 then return = (new - old) / old;
+ 
+ if currentbar > 3 then
+  sigma2 = omega + alpha*return[1]*return[1] + beta*sigma2
+ 
+ else sigma2 = return * return;
+ 
+end;
+
+garch = SquareRoot(sigma2*254);
+
+MM.GARCH11 = garch;

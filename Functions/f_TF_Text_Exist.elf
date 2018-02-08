@@ -1,0 +1,26 @@
+// TF_TextExist
+// Copyright 2010 Horowitz Technology Partners, LLC
+
+Inputs: 
+	TextID( numericsimple ) 
+	;
+
+Variables: 
+	NextID( 0 ) 	
+	;
+
+Condition1 = false ;
+NextID = Text_GetFirst( 3 ) ;
+
+While (NextID >= 0)	Begin
+	If NextID = TextID Then Begin
+		Condition1 = true ;
+		NextID = -2 ; { this short-circuits the loop }
+	End
+	Else
+		NextID = Text_GetNext( NextID, 3 ) ;
+End ;
+
+TF_Text_Exist = Condition1 ;
+
+// ** Copyright (c) 2010 Horowitz Technology Partners, LLC All rights reserved. ** 

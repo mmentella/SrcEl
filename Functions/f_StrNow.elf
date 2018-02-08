@@ -1,0 +1,9 @@
+
+Vars: dt("");
+
+if Date > 991231 then
+	dt = RightStr(NumToStr(Date, 0), 6)
+else
+	dt = NumToStr(Date, 0);
+
+StrNow = dt + " - " + RightStr("000" + NumToStr(Time, 0), 4); 

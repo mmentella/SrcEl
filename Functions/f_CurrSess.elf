@@ -1,0 +1,52 @@
+Inputs: ResNum(NumericSimple),SessNum(NumericSimple);
+var: intrabarpersist cur_start_dw(0);
+var: intrabarpersist cur_end_dw(0);
+var: intrabarpersist cur_start_t(0);
+var: intrabarpersist cur_end_t(0);
+
+var: intrabarpersist curr_dw(0), intrabarpersist ctime(0);
+
+
+var: intrabarpersist after_start(false);
+var: intrabarpersist before_end(false);
+
+
+
+cur_start_dw = sessionstartday(0, SessNum);
+cur_end_dw = sessionendday(0, SessNum);
+
+cur_start_t = TimeToMinutes(sessionstarttime(0, SessNum));
+cur_end_t = TimeToMinutes(sessionendtime(0, SessNum));
+
+curr_dw = dayofweek(date data(ResNum));
+ctime = TimeToMinutes(time data(ResNum));
+
+after_start = false;
+before_end = false;
+
+if curr_dw = cur_start_dw then  begin
+	if ctime >= cur_start_t then after_start = true;
+end;
+
+if curr_dw = cur_end_dw then begin
+	if ctime <= cur_end_t then before_end = true;
+end;
+
+
+if cur_start_dw = cur_end_dw then begin
+	CurrSess = after_start and before_end;
+	#return;
+end;
+
+if cur_start_dw = curr_dw then begin
+	CurrSess = after_start;
+	#return;
+end;
+
+if cur_end_dw = curr_dw then begin
+	CurrSess = before_end;
+	#return;
+end;
+
+CurrSess = false;
+

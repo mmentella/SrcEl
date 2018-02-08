@@ -1,0 +1,4 @@
+[LegacyColorValue = true]; 
+
+if marketposition <>-1 then MinTradeLow=999999;
+if marketposition=-1 and L<MinTradeLow[1] then MinTradeLow=L;

@@ -1,0 +1,21 @@
+[LegacyColorValue = TRUE];
+
+Inputs: Len(Numeric), Trigger(Numeric);
+
+Vars: Trend(0), Osc(0);
+
+Osc = ElliottWaveOsc;
+
+IF Osc = Highest(Osc, Len) AND Trend = 0 Then
+	Trend = 1;
+
+IF Osc = Lowest(Osc, Len) AND Trend = 0 Then 
+Trend = -1;
+
+IF Lowest(Osc, Len) < 0 AND Trend = -1 AND Osc > -1 * Trigger * Lowest(Osc, Len) Then
+	Trend = 1;
+
+IF Highest(Osc, Len) > 0 AND Trend = 1 AND Osc < -1 * Trigger * Highest(Osc, Len) Then
+	Trend = -1;
+
+ElliottTrend = Trend;

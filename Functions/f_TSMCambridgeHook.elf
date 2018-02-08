@@ -1,0 +1,20 @@
+[LegacyColorValue = TRUE];
+
+{ TSMCambridgeHook: Cambridge Hook
+  Copyright 1999-2004, P.J.Kaufman. All rights reserved.
+}
+  inputs: length(numericsimple), vlength(numericsimple);
+  vars:   avgv(0), avgoi(0);
+
+  TSMCambridgeHook = 0;
+  if high > high[1] and close < close[1] and @RSI(close,length) > 60 then begin
+     if vlength < 2 then begin
+	avgv = volume;
+	avgoi = openint;
+	end
+     else begin
+	avgv = average(volume,vlength);     
+	avgoi = average(openint,vlength);
+	end;
+     if avgv > avgv[1] and avgoi > avgoi[1] then TSMCambridgeHook = 1;
+     end;

@@ -1,0 +1,13 @@
+[LegacyColorValue = TRUE];
+
+{ TSMStochasticRSI function for the Stochastic RSI
+  Copyright 1999-2004, P.J.Kaufman. All rights reserved.
+}
+  inputs: price(numericseries), stochlen(numericsimple),RSIlen(numericsimple);
+  vars: top(0),bottom(0);
+
+  top = highest(RSI(price,RSIlen),stochlen);
+  bottom = lowest(RSI(price,RSIlen),stochlen);
+  TSMStochasticRSI = 0;
+  if top <> bottom then 
+	TSMStochasticRSI = (RSI(price,RSIlen) - bottom) / (top - bottom);

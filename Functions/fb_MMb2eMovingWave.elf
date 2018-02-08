@@ -1,0 +1,7 @@
+Inputs: Period(NumericSimple),SmoothPeriod(NumericSimple);
+
+vars: alpha(2/(smoothperiod + 1)),wave(0);
+
+wave = Highest(high,period) - Lowest(low,period);
+
+MM.MovingWave = MM.Smoother(wave,alpha);

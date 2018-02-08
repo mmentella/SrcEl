@@ -1,0 +1,11 @@
+Inputs: Price(NumericSeries), Length(NumericSimple);
+Variables: SumSqr(0), Avg(0), Counter(0);
+
+If Length <> 0 Then Begin
+	Avg = Average(Price, Length);
+	SumSqr = 0;
+	For Counter = 0 To Length - 1 Begin
+		SumSqr = SumSqr + (Price[Counter] - Avg) * (Price[Counter] - Avg);
+	End;
+	STDDevConv = SquareRoot(SumSqr / Length);
+End

@@ -1,0 +1,4 @@
+Input: _strAccount(StringSimple);
+
+RaiseRuntimeError("GetBDAccountEquity function is currently not implemented");
+GetBDAccountEquity = 0;

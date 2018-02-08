@@ -1,0 +1,16 @@
+Inputs: Precision(NumericSimple);
+
+    Variables: Res(0);
+    
+    Res=0;
+        
+    switch(Precision) begin
+        case 0 : Res= TickSize; 
+        case 1 : Res= 0.1; 
+        case 2 : Res= 0.01; 
+        case 3 : Res= 0.001; 
+        case 4 : Res= 0.0001; 
+        case 5 : Res= 0.00001; 
+    end;
+
+    SetPoint = Res;

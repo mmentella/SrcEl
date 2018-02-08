@@ -1,0 +1,17 @@
+vars: s(""),s1("["+getsymbolname+"]"),bt(""),filename(MidStr(getsymbolname,2,6));
+
+if getappinfo(airealtimecalc) = 1 then bt = "" else bt = "BT.";
+
+if currentbar = 1 then FileDelete("C:\FX." + bt + filename + ".txt");
+
+ if marketposition <> 0 and barssinceentry = 0 then begin
+  
+  s = NumToStr(entryprice,Intportion(Log(pricescale)/Log(10)));
+  
+  if marketposition = 1 then begin
+   FileAppend("C:\FX." + bt + filename + ".txt",s1 + " " + MM.ELDateToString_IT(d) + " " + MM.ELTimeToStr + " LONG " + s + NewLine); 
+  end else begin
+   FileAppend("C:\FX." + bt + filename + ".txt",s1 + " " + MM.ELDateToString_IT(d) + " " + MM.ELTimeToStr + " SHORT " + s + NewLine);
+  end;
+  
+ end;

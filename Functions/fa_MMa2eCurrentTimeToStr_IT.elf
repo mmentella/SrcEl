@@ -1,0 +1,6 @@
+vars: hour(0),minute(0);
+
+hour   = IntPortion(currenttime/100);
+minute = currenttime - hour*100;
+
+MM.CurrentTimeToStr_IT = NumToStr(hour,0)+":"+MM.IFFStr(minute<10,"0"+NumToStr(minute,0),NumToStr(minute,0));

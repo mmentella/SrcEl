@@ -1,0 +1,1 @@
+MM.CurrentDateTimeToStr_IT = MM.ELDateToString_IT(currentdate) + " " + MM.CurrentTimeToStr_IT;

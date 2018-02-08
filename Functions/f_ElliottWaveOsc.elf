@@ -1,0 +1,10 @@
+[LegacyColorValue = TRUE];
+
+Vars: Osc535(0), Price(0);
+
+Price = (H+L)/2;
+
+IF Average(Price, 35) <> 0 Then 
+	Osc535 = Average(Price, 5) - Average(Price, 35);
+
+ElliottWaveOsc = Osc535;

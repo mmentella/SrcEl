@@ -1,0 +1,21 @@
+vars: id(0);
+
+if currentbar > 1 then begin
+ 
+ if d > 1120501 and LastBarOnChart then begin
+  
+  text_setlocation(id,d,t,c);
+  text_setstring(id,"Periodo di Trading scaduto. Aggiornare la Licenza o contattare 'm.mentella@gmail.com'. " + 
+                     "Potrebbero essere rimaste delle posizioni aperte in Banca.");
+ end;
+ 
+ MM.TradingRights = d < 1120501;
+ 
+end else begin
+ 
+ id = text_new(d,t,c,"");
+ text_setcolor(id,white);
+ text_setsize(id,10);
+ text_setstyle(id,1,1);
+ 
+end;

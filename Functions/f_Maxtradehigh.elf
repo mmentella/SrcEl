@@ -1,0 +1,4 @@
+[LegacyColorValue = true]; 
+
+if marketposition <> 1 then MaxTradeHigh=-999999;
+if marketposition=1 and H>Maxtradehigh[1] then Maxtradehigh=H;

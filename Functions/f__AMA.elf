@@ -1,0 +1,48 @@
+{***********************************************************
+
+Name : Adaptive Moving Average Function
+
+Notes: From "Smarter Trading" by Kaufman
+
+Desc : An exponential moving average in which the smoothing 
+       factor varies with the "efficiency ratio". Efficiency 
+       ratio is the ratio of total price excursion divided by 
+       the sum of all individual excursions of each bar. It 
+       equals 1.0 if all moves are in one direction over the 
+       lookback period.
+
+By: 	 Bob Fulks based upon code and descriptions in 
+       Kaufman's book with:
+
+			> Price input added
+
+
+
+************************************************************}
+
+
+Inputs: 	Price(NumericSeries),  	              {Price which is averaged}
+		Period(NumericSimple); 	              {Lookback period}
+
+Vars  : 	Noise(0), 					{Sum all individual excursions}
+		Signal(0),  					{Total excursion over period}
+		Diff(0),  					{Individual price excursions}
+		EfRatio(0), 					{Efficiency Ratio}
+		Smooth(1),  					{Smoothing factor}
+		Fastend(0.666),  				{Shortest smoothing}
+		Slowend(0.0645),  		       	{Longest smoothing}
+		AMA(0); 					{Adaptive Moving Average}
+
+Diff    = AbsValue(Price - Price[1]);
+
+if CurrentBar < Period then AMA = Price
+else begin
+	Signal  = AbsValue(Price - Price[Period]);
+	Noise   = Summation(Diff, Period);
+	EfRatio = iff (Noise <> 0, Signal / Noise, 0);
+	Smooth  = Power(EfRatio * (Fastend - Slowend) + Slowend, 2);
+	AMA     = AMA[1] + Smooth * (Price - AMA[1]);
+end;
+
+   _AMA   = AMA;
+

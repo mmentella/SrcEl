@@ -1,0 +1,5 @@
+inputs: 
+	Val1( Numeric ), 
+	Perc( Numeric );                                                
+
+Percentual = Val1 + (Val1 * Perc);

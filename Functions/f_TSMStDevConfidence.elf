@@ -1,0 +1,22 @@
+[LegacyColorValue = TRUE];
+
+{ TSMStDevConfidence : Standard deviation confidence level (in percent)
+  Copyright 1998-2004, PJ Kaufman. All rights reserved
+
+  Returns confidence level, e.g., if stdev = 2.0 then confidence = 95.44,
+  including both ends of the curve. To find confidence of one end of the
+  distribution, divide result by 2. }
+
+	inputs: price(numericseries), length(numericsimple);
+	vars:	n(0), pi(3.1415926), e(2.7182818), exp(0), sd(0), diff(0), diff2(0),
+			kconst(0);
+
+	n = length;
+	if currentbar < length then n = currentbar;
+	diff = price - average(price,n);
+	diff2 = power(diff,2);
+	sd = squareroot(average(diff2,n));
+
+	exp = sd*sd / 2;
+	kconst =  1.00 / squareroot(2*pi);
+	TSMStDevConfidence =100 -  100 * kconst  * power(e,-exp);

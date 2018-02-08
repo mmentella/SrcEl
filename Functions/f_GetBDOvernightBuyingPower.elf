@@ -1,0 +1,4 @@
+Input: _strAccount(StringSimple);
+
+RaiseRuntimeError("GetBDOvernightBuyingPower function is currently not implemented");
+GetBDOvernightBuyingPower = 0;

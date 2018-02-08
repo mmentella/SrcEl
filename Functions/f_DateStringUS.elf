@@ -1,0 +1,23 @@
+
+Input: DateVal (NumericSimple), TimeVal (NumericSimple); 
+
+Var: TextString (""), YearNum (0), Hour (0), Minutes (0), MinStr (""); 
+
+If DateVal > 0 and Year(DateVal) >= 0 then Begin 
+	TextString = NumToStr(Month(DateVal), 0) + "/"; 
+	TextString = TextString + NumToStr(DayofMonth(DateVal), 0) + "/"; 
+	YearNum = Year(DateVal) + 1900;
+	TextString = TextString + NumToStr(YearNum, 0); 
+	Hour = IntPortion(TimeVal / 100.); 
+	Minutes = TimeVal - (100 * Hour); 
+	if Minutes < 10 then 
+		MinStr = "0" + NumToStr(Minutes, 0) 
+	else 
+		MinStr = NumToStr(Minutes, 0); 
+	TextString = TextString + " " + NumToStr(Hour, 0) + ":" + 
+	MinStr + ":" + "00"; 
+end 
+else 
+	TextString = "NA"; 
+
+DateStringUS = TextString;

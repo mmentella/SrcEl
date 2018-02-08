@@ -1,0 +1,18 @@
+
+inputs:
+	KeyArray[MaxSize1](NumericArrayRef),
+	ValueArray[MaxSize2](NumericArrayRef),
+
+	defaultKey(NumericSimple),
+	defaultValue(NumericSimple);
+
+variables: idx(0);
+
+for idx = 0 to MaxSize1 begin
+	KeyArray[idx] = defaultKey;
+end;
+
+for idx = 0 to MaxSize2 begin
+	ValueArray[idx] = defaultValue;
+end;
+

@@ -1,0 +1,26 @@
+Inputs: Price(numericseries),alpha(numericsimple);
+
+vars: smooth(0),cycle(0),q1(0),i1(0),deltaphase(0),mediandelta(0),dc(0),instperiod(0),period(0);
+
+smooth = (price + 2*price[1] + 2*price[2] + price[3])/6;
+
+cycle = (1-.5*alpha)*(1-.5*alpha)*(smooth - 2*smooth[1] + smooth[2]) + 2*(1-alpha)*cycle[1] - (1-alpha)*(1-alpha)*cycle[2];
+
+if currentbar < 7 then cycle = (price - 2*price[1] + price[2])/4;
+
+q1 = (.0962*cycle + .5769*cycle[2] - .5769*cycle[4] - .0962*cycle[6])*(.5 + .08*instperiod[1]);
+i1 = cycle[3];
+
+if q1 <> 0 and q1[1] <> 0 then deltaphase = (i1/q1 - i1[1]/q1[1])/(1+i1*i1[1]/(q1*q1[1]));
+
+if deltaphase < .1 then deltaphase = .1;
+if deltaphase > 1.1 then deltaphase = 1.1;
+
+mediandelta = Median(deltaphase,5);
+
+if mediandelta = 0 then dc = 15 else dc = 6.28318/mediandelta + .5;
+
+instperiod = .33*dc + .67*instperiod[1];
+period = .15*instperiod + .85*period[1];
+
+MM.CyclePeriod = period;

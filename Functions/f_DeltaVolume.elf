@@ -1,0 +1,16 @@
+
+
+
+inputs:
+	DeltaCalculationMode(numericsimple),	// 0 - AskBidType, 1 - UpDnVolumeType
+
+	AskDataNumber(numericsimple),
+	BidDataNumber(numericsimple);
+
+
+if DeltaCalculationMode = 0 then
+	DeltaVolume = ticks data(AskDataNumber) - ticks data(BidDataNumber)
+else
+	DeltaVolume = upticks - downticks;
+
+

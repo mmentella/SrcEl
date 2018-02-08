@@ -1,0 +1,8 @@
+[LegacyColorValue = TRUE];
+
+{ TSMSample Error: Standard error based on sample size
+  Copyright 1998-2004, PJ Kaufman. All rights reserved }
+
+	inputs: size(numericsimple);
+
+	TSMSampleError = 1 / SquareRoot(size);

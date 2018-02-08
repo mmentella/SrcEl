@@ -1,0 +1,4 @@
+Inputs: LastPrice(NumericSimple),_oUpLimit(NumericRef),_oDownLimit(NumericRef),PercMove(NumericSimple);
+
+_oUpLimit = lastprice*(1+percmove);
+_oDownLimit = lastprice*(1-percmove);

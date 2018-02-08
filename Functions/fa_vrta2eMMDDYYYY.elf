@@ -1,0 +1,62 @@
+[LegacyColorValue = TRUE];
+
+{
+Type  : User Function (string)
+Name  : vrt.MMDDYYYY
+Notes : Converts the numeric date input into a delimited string.
+Return: Date as a string "mm/dd/yyyy".
+Sample: Print (vrr.MMDDYYYY (Date))
+
+10/13/1999 skt
+  Converted logic to be Y2K compliant
+
+Easy Language translation provided
+  by Samuel K. Tennis
+  of Vista-Research and Trading, Inc. (c) 1994 - 1998
+
+EasyLanguage interpretation provided
+   by  Samuel K. Tennis
+   of  Vista-Research (c) 1998, 1999, 2000, 2001, 2002
+
+Any unauthorized use of this material may constitute
+  a violation of U.S. and International Copyright Laws.
+}
+
+
+Inputs: tDate (NumericSimple) ;
+
+Vars  : iDD    (00),        iMM    (00),        iYY    (00) ;
+Vars  : chDD   (""),        chMM   (""),        chYY   (""),
+        RetStr ("") ;
+
+{ ---------------------------------------------------------------------------- }
+
+iDD = @Round      (@FracPortion (tDate *   0.01) * 100.0, 0) ;
+iMM = @IntPortion (@FracPortion (tDate * 0.0001) * 100.0) ;
+iYY = @IntPortion               (tDate * 0.0001) + 1900 ;
+
+chDD = @NumToStr (iDD, 00) ;
+chMM = @NumToStr (iMM, 00) ;
+chYY = @NumToStr (iYY, 00) ;
+
+if  @StrLen (chDD) <  02  then  chDD  = "0" + chDD ;
+if  @StrLen (chMM) <  02  then  chMM  = "0" + chMM ;
+
+RetStr = chMM + "/" + chDD + "/" + chYY ;
+
+vrt.MMDDYYYY  = RetStr ;
+
+{ ---------------------------------------------------------------------------- }
+
+{
+Custom Programming Services provided by:
+
+               Samuel K. Tennis
+                Vista-Research
+             129 Staff Drive, NE
+        Ft. Walton Beach, Florida 32548
+         voice :    1(850) 243-5105
+         fax   :    1(850) 301-2884
+         eMail :  skt@vista-research.com
+           http://www.vista-research.com
+}

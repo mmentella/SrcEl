@@ -1,0 +1,13 @@
+Inputs: _Array[M](NumericArrayRef), Length(NumericSimple), val(NumericSimple);
+
+vars: j(0);
+
+if length <= M + 1 then begin
+ 
+ for j = 0 to length - 1 begin
+  
+  _Array[j] = val;
+  
+ end;
+
+end;

@@ -1,0 +1,19 @@
+Inputs: Value(NumericSimple);
+
+if marketposition <> 0 then begin
+
+ if marketposition = 1 then begin
+  
+  if c < entryprice + value/bigpointvalue then MM.ModalExit = entryprice + value/bigpointvalue
+  else MM.ModalExit = c + 1 point;
+  
+ end;
+ 
+ if marketposition = -1 then begin
+  
+  if c > entryprice - value/bigpointvalue then MM.ModalExit = entryprice - value/bigpointvalue
+  else MM.ModalExit = c - 1 point;
+  
+ end;
+
+end else MM.ModalExit = -1;

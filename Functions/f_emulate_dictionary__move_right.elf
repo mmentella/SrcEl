@@ -1,0 +1,14 @@
+
+inputs:
+	KeyArray[MaxSize1](NumericArrayRef),
+	ValueArray[MaxSize2](NumericArrayRef),
+
+	FromIndex(NumericSimple);
+
+variables: idx(0);
+
+
+for idx = MaxSize1 downto FromIndex + 1 begin
+	KeyArray[idx] = KeyArray[idx - 1];
+	ValueArray[idx] = ValueArray[idx - 1];
+end;

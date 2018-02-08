@@ -1,0 +1,38 @@
+Inputs: numdays(numericsimple),sod(numericsimple),eod(numericsimple);
+
+Vars: hh(0),ll(9999),mean(0),maxcow(0),counter(0),look(true),loop(0);
+
+arrays: cow[22](0),cow1[22](0);
+
+if time > sod and time > eod then begin
+ hh = maxlist(hh,h);
+ ll = minlist(ll,l);
+ 
+ look = true;
+end;
+
+if time > eod then begin
+ if look then begin
+  look = false;
+  if counter < numdays then begin cow[counter] = hh - ll; counter = counter + 1; end
+  else begin
+   for loop = 1 to numdays - 1 begin
+    cow1[loop-1] = cow[loop];
+   end;
+   cow1[numdays-1] = hh - ll;
+   maxcow = 0;
+   for loop = 0 to numdays - 1 begin
+    cow[loop] = cow1[loop];
+    maxcow = maxlist(maxcow,cow[loop]);//noise
+   end;
+   
+   //Calcolo la media rimuovendo i noise
+   mean = (1/(numdays-1))*(SummationArray(cow,numdays) - maxcow);
+   
+   hh = 0;
+   ll = 9999;
+   
+   ngjoecow = mean;
+  end;
+ end;
+end;

@@ -1,0 +1,12 @@
+Inputs: InPhase(NumericSeries),Quadrature(NumericSeries),Period(NumericSeries),_oRealPart(NumericRef),_oImaginaryPart(NumericRef);
+
+vars: ji(0),jq(0),i2(0),q2(0);
+
+MM.HilbertTransform(InPhase,period,value1,ji);
+MM.HilbertTransform(Quadrature,period,value1,jq);
+
+i2 = InPhase - jq;
+q2 = Quadrature + ji;
+
+_oRealPart      = i2*i2[1] + q2*q2[1];
+_oImaginaryPart = i2*q2[1] - q2*i2[1];

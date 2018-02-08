@@ -1,0 +1,19 @@
+inputs: 
+	ApproxNumRows( numericsimple ),                                           
+	                                                                                  
+	                                                                               
+	                                                   
+	RangeAvgLen( numericsimple ) ;
+
+variables:
+	var0( 0 ), 
+	var1( MinMove / PriceScale ) ;
+
+condition1 = PriceScale > 0 and ApproxNumRows > 0 ;
+if condition1 then
+	begin
+	var0 = Average( Range, RangeAvgLen ) ;
+	AB_RowHeightCalc = MaxList( var1, var0 / ApproxNumRows ) ;
+	end
+else
+	AB_RowHeightCalc = .1 ;

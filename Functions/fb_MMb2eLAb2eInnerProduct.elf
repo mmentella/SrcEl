@@ -1,0 +1,15 @@
+Inputs: Array1[M](NumericArrayRef), Array2[M](NumericArrayRef), Length(NumericSimple);
+
+vars: var0(0),j(0);
+
+if length > M + 1 then raiseruntimeerror("InnerProduct => " + NumToStr(M,0));
+
+var0 = 0;
+ 
+for j = 0 to length - 1 begin
+  
+ var0 = var0 + array1[j] * array2[j];
+ 
+end;
+
+MM.LA.InnerProduct = var0;

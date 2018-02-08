@@ -1,0 +1,14 @@
+vars: mcp(0);
+
+if marketposition <> 0 then begin
+ //MAX CONTRACT PROFIT
+ if barssinceentry = 0 then begin
+  if marketposition = 1 then mcp = h - entryprice;
+  if marketposition = -1 then mcp = entryprice - l;
+ end else begin
+  if marketposition = 1 then mcp = maxlist(mcp,h-entryprice);
+  if marketposition = -1 then mcp = maxlist(mcp,entryprice-l);
+ end;
+end;
+
+MM.DICICCO.MaxContractProfit = mcp;

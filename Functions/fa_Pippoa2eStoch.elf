@@ -1,0 +1,6 @@
+inputs: TimeLen(NumericSimple), Slowing(NumericSimple),oFastK(NumericRef),oSlowD(NumericRef);
+
+variables: var2( 0 ), var3( 0 ) ;
+
+Value1 = Stochastic( h, l, c, TimeLen, Slowing, 
+ Slowing, 1, oFastK, oSlowD, var2, var3 ) ;

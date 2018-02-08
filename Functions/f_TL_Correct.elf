@@ -1,0 +1,5 @@
+Inputs: Index(NumericSimple),StartDate(NumericSimple),StartTime(NumericSimple),StartPrice(NumericSimple),EndDate(NumericSimple),EndTime(NumericSimple),EndPrice(NumericSimple); 
+
+
+       tl_setbegin(Index,StartDate,StartTime,StartPrice);  
+       tl_setend(Index,EndDate,EndTime,EndPrice);  

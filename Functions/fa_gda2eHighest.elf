@@ -1,0 +1,12 @@
+
+Inputs: Price(NumericSeries), Length(NumericSimple);
+
+Vars: counter(0), max(0);
+
+max = Price;
+for counter = Length - 1 downto 1 begin
+	if Price[counter] > max then
+		max = Price[counter];
+end;
+
+gd.Highest = max;

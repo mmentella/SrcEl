@@ -1,0 +1,9 @@
+Input: _Account(StringSimple);
+
+GetRTAccountNetWorth = 0;
+for value1 = 1 to tm_accounts_count begin
+	if 	_Account = tm_account_str_value(value1, 2000) then begin
+		GetRTAccountNetWorth = strtonum(tm_account_str_value2(value1, "Net Liquidation"));
+		break;
+	end;
+end; 

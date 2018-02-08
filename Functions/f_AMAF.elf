@@ -1,0 +1,22 @@
+[LegacyColorValue = true]; 
+
+{************************************************************************
+ADAPTIVE MOVING AVERAGE Filter
+System by Perry Kaufman
+*************************************************************************}
+
+Inputs: 		Period(Numeric), Pcnt(Numeric);
+Vars: 		Noise(0), Signal(0), Diff(0), efRatio(0), Smooth(1), Fastest(.6667), Slowest(.0645), AdaptMA(0), AMAFltr(0);
+
+Diff = AbsValue(Close - Close[1]);
+IF CurrentBar <= Period Then 		AdaptMA = Close;
+IF CurrentBar > Period Then Begin
+	Signal  = AbsValue(Close - Close[Period]);
+	Noise   = Summation(Diff, Period);
+	If Noise <> 0 Then		efRatio = Signal / Noise;
+	Smooth  = Power(efRatio * (Fastest - Slowest) + Slowest, 2);
+	AdaptMA = AdaptMA[1] + Smooth * (Close - AdaptMA[1]);
+	AMAFltr = StdDev(AdaptMA-AdaptMA[1], Period) * Pcnt;
+End;
+AMAF = AMAFltr;
+

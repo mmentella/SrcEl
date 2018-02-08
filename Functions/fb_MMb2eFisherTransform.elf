@@ -1,0 +1,14 @@
+Inputs: Price(NumericSeries),Length(NumericSimple),Smooth(TrueFalse);
+
+vars: max(0),min(0),stoch(0),fish(0);
+
+max = Highest(price,length);
+min = Lowest(price,length);
+
+if max <> min then stoch = (price - min)/(max - min);
+
+if smooth then stoch = (4*stoch + 3*stoch[1] + 2*stoch[2] + stoch[3]) * .1;
+
+fish = Log((1 + 1.99*(stoch - .5))/(1 - 1.99*(stoch - .5))) * .5;
+
+MM.FisherTransform = fish;

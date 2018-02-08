@@ -1,0 +1,9 @@
+// TF_LastBarOnChart
+// Copyright 2010 Horowitz Technology Partners, LLC
+
+[LegacyColorValue = true]; 
+
+TF_LastBarOnChart = ((Date = LastCalcDate) and (Time = LastCalcTime)) ;
+
+// ** Copyright (c) 2010 Horowitz Technology Partners, LLC All rights reserved. ** 
+

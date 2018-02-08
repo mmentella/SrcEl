@@ -1,0 +1,16 @@
+inputs: 
+	SrcArray[MaxSize1]( numericarray ),
+	DstArray[MaxSize2]( NumericArrayRef ),
+	last_idx(NumericSimple),
+	InitCapital(NumericSimple);
+	
+var : cumm(0);
+cumm = InitCapital;
+for value1 = 1 to last_idx begin
+	value2 = SrcArray[value1];
+	if 0 <> cumm then
+		DstArray[value1] = value2 / absvalue(cumm)
+	else
+		DstArray[value1] = 0;
+	cumm += value2;
+end;

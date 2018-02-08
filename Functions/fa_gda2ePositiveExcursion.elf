@@ -1,0 +1,49 @@
+
+Inputs: HighVal(NumericSeries), LowVal(NumericSeries), PeriodDays(NumericSimple), Conservative(TrueFalseSimple);
+
+Variables: PerDaysMinus1(PeriodDays - 1), Start(IFF(Conservative, 1, 0));
+
+Variables: MAXsize(22);
+Arrays: max[22](HighVal), min[22](LowVal);
+
+
+Vars: hiDay(HighVal), loDay(LowVal), count(0), hiMove(0), loMove(0), move(0);
+Vars: shiftDate(0);
+
+
+//if Date > Date[1] then begin
+if Date > shiftDate then begin
+
+	shiftDate = Date;
+
+	for count = PerDaysMinus1 downto 1 begin
+		max[count]=max[count - 1];
+		min[count]=min[count - 1];
+	end;
+	max[0]=hiDay; min[0]=loDay;
+{
+	loMove = max[PerDaysMinus1] - gd.LowestArray(min, PeriodDays);
+	for count = PerDaysMinus1 - 1 downto 0 begin
+		move = max[count] - gd.LowestArray(min, count + 1);
+		if move > loMove then loMove = move;
+	end;
+	loMove = -loMove;
+}
+	hiMove = min[PerDaysMinus1] - gd.HighestArray(max, PeriodDays - Start);
+	for count = PerDaysMinus1 - 1 downto Start begin
+		move = min[count] - gd.HighestArray(max, count + 1 - Start);
+		if move < hiMove then hiMove = move;
+	end;
+	hiMove = -hiMove;
+
+	hiDay = HighVal; loDay = LowVal;
+
+end
+
+else begin
+	if HighVal > hiDay then hiDay = HighVal;
+	if LowVal < loDay then loDay = LowVal;
+
+end;
+
+gd.PositiveExcursion = hiMove;

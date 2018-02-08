@@ -1,0 +1,25 @@
+[LegacyColorValue = true]; 
+
+Inputs: Price(NumericSeries), Period(NumericSimple);
+
+Variables: Fastest(.6667), Slowest(.0645);
+
+Vars: Noise(0), Signal(0), Diff(0), efRatio(0), AdaptMA(0);
+Vars: counter(0), smooth(0);
+
+Diff = AbsValue(Price - Price[1]);
+
+If CurrentBar <= Period Then
+	AdaptMA = Close
+Else Begin
+	Signal = AbsValue(Price - Price[Period]);
+	Noise = Diff;
+	For counter = Period - 1 DownTo 1 Begin
+		Noise = Noise + Diff[counter];
+	End;
+	If Noise <> 0 Then efRatio = Signal / Noise else efRatio = 1;
+	smooth = efRatio * (Fastest - Slowest) + Slowest;
+	AdaptMA = AdaptMA[1] + smooth * smooth * (Price - AdaptMA[1]);
+End;
+
+gd.KAMA = AdaptMA;

@@ -1,0 +1,11 @@
+input: price(NumericSeries),alpha(NumericSimple);
+
+vars: lambda(0),regfilt(0);
+
+lambda = expvalue(.16/alpha);
+
+regfilt = (alpha/(1+lambda))*price + (1/(1+lambda))*(1-alpha+2*lambda)*regfilt[1] - (1/(1+lambda))*lambda*regfilt[2];
+
+if currentbar < 4 then regfilt = .25*(price + 2*price[1] + price[2]);
+
+MM.RegularizedFilter = regfilt;

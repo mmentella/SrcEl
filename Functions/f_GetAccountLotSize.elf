@@ -1,0 +1,4 @@
+Input: _strAccount(StringSimple);
+
+RaiseRuntimeError("GetAccountLotSize function is currently not implemented");
+GetAccountLotSize = 0;

@@ -1,0 +1,9 @@
+Inputs: Price(NumericSeries);
+
+vars: filt(0),cycle(0);
+
+filt =  0.0774*Price + 0.0778*Price[1] + 0.0778*Price[2] + 0.0774*Price[3] + 1.4847*filt[1] - 1.0668*filt[2] + 0.2698*filt[3];
+
+cycle = 0.95*filt - 0.95*filt[1] + 0.9*cycle[1];
+
+MM.MesaFilter = cycle;

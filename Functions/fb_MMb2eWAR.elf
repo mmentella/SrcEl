@@ -1,0 +1,28 @@
+vars: hh(0),ll(999999),war(0),count(0);
+
+array: week[5](0);
+
+if d <> d[1] then begin
+ 
+ if count < 5 then begin
+  week[count] = hh - ll;
+  war         = hh - ll;
+ end else begin
+  week[0] = week[1];
+  week[1] = week[2];
+  week[2] = week[3];
+  week[3] = week[4];
+  week[4] = hh - ll;
+  
+  war     = .2 * (week[0] + week[1] + week[2] + week[3] + week[4]);
+ end;
+ 
+ count = count + 1;
+ hh    = h;
+ ll    = l;
+end;
+
+hh = maxlist(hh,h);
+ll = minlist(ll,l);
+
+MM.WAR = war;

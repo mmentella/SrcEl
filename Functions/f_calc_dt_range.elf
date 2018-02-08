@@ -1,0 +1,15 @@
+Inputs: percent(Numeric), oDate(NumericRef), oTimeS(NumericRef), oDateM(NumericRef), oTimeSM(NumericRef);
+
+var: now(0), rightest(0);
+
+rightest = getappinfo(airightdispdatetime);
+now = jul_dt;
+
+value1 = rightest - (rightest - now) * percent;
+value2 = rightest - (rightest - now) / 10;
+
+oDate = JulianToDate(value1);
+oTimeS = datetime2eltime_s(value1);
+
+oDateM = JulianToDate(value2);
+oTimeSM = datetime2eltime_s(value2);

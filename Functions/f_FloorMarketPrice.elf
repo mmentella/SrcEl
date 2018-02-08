@@ -1,0 +1,6 @@
+
+Inputs: Price(NumericSimple);
+
+Variables: tickUnit(MinMove / PriceScale); { MinMove, Points }
+
+FloorMarketPrice = IntPortion(Price / tickUnit) * tickUnit;

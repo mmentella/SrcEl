@@ -1,0 +1,12 @@
+[LegacyColorValue = TRUE];
+
+{ TSMHarmonicMean: A time-weighted average
+  Copyright 1998-2004, PJ Kaufman. All rights reserved }
+
+	inputs: price(numericseries), length(numericsimple);
+	vars:	n(0), sum(0);
+
+	n = length;
+	if currentbar < length then n = currentbar;
+	sum = summation(1/price,n);
+	TSMHarmonicMean = n / sum;

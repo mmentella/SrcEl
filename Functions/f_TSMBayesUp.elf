@@ -1,0 +1,17 @@
+[LegacyColorValue = TRUE];
+
+{ TSMBayesUp : The probability of prices moving up, using Bayes Theorem
+  Copyright 1998-2004, PJ Kaufman. All rights reserved }
+
+{ probup = original probability of prices moving higher
+  probdown = original probability of prices moving lower
+  pnewup = new event probability of prices moving higher
+  pnewdn = new event probability of prices moving lower
+  NOTE: The new probability that prices will move lower should be 1 - BayesUp }
+
+	inputs: probup(numeric), probdn(numeric), pnewup(numeric), pnewdn(numeric);
+	vars: denom(0);
+
+	TSMBayesUp = 0;
+	denom = probup * pnewup  + probdn*pnewdn;
+	if denom  <> 0 then TSMBayesUp = (probup * pnewup) / denom;

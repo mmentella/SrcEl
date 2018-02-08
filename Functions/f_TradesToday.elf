@@ -1,0 +1,35 @@
+[LegacyColorValue = true]; 
+
+{
+User Function: TradesToday
+
+Inputs : Target date.
+Returns: Number of entries on specified date.
+Properties
+  [ ] Auto Detect
+  [*] Simple
+  [ ] Series
+
+Sample Usage :
+  if (TradesToday(Date[0]) >= 2) 
+    then EntryOK = FALSE ;
+or
+  if (Condition1 and Condition2 and TradesToday(Date[0]) < 2) 
+  then begin
+    { ... do something here ... } 
+  end ;
+
+Provided by Product Support Dept.
+         of Omega Research, Inc. 
+}
+
+Inputs: Date0(NumericSimple) ;
+Vars  : Loop(0), Cnt(0) ;
+
+Cnt = 0 ;
+for Loop = 0 to 10 begin
+  if (EntryDate(Loop) = Date0)
+    then Cnt = Cnt + 1 ;
+end ; { next Loop }
+
+TradesToday = Cnt ;

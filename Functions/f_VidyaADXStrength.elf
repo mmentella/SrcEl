@@ -1,0 +1,12 @@
+Inputs: Price(NumericSeries),Periods(NumericSimple),oVADX(NumericRef),oXAvgStrength(NumericRef),oStghComp(NumericRef);
+
+Vars: vadx(0),var0(0),var1(0);
+
+vadx = VIDYADX(Price,Periods);
+var0 = iff(vadx<>0,1 - vadx[1]/vadx,0);
+var1 = xaverage(var0,Periods);
+
+oVADX = vadx;
+oStghComp = absvalue(var1-var0)/var1;
+oXAvgStrength = var1;
+VidyaADXStrength = var0;

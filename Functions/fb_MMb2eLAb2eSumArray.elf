@@ -1,0 +1,11 @@
+Inputs: _Array1[M](NumericArrayRef), _Array2[M](NumericArrayRef), Length(NumericSimple);
+
+vars: j(0);
+
+if length > M + 1 then raiseruntimeerror("SumArray => " + NumToStr(M,0));
+
+for j = 0 to length -1 begin
+ 
+ _Array1[j] = _Array1[j] + _Array2[j];
+ 
+end; 

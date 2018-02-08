@@ -1,0 +1,22 @@
+Input: _Account(StringSimple), _PositionID(Numeric);
+Variables: counter(0);
+
+begin
+// DBG: print("GetPositionSymbol()._PositionID=",_PositionID:0:0); 
+// DBG: print("GetPositionSymbol()._Account=",_Account); 
+
+GetPositionSymbol = "";
+counter = 0;
+for value1 = 1 to tm_positions_count begin
+	// DBG: print("GetPositionSymbol().Account(",value1:0:0, ")=",tm_position_str_value(value1, 2001)); 
+	if 	_Account = tm_position_str_value(value1, 2001) then begin
+		counter = counter + 1;
+		// DBG: print("GetPositionSymbol().counter=",counter); 
+		if counter = _PositionID then begin
+			GetPositionSymbol = tm_position_str_value(value1, 2000);
+			break;
+		end;	
+	end;
+end; 
+	
+end

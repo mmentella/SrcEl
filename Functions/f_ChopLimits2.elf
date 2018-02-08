@@ -1,0 +1,53 @@
+[LegacyColorValue = TRUE];
+
+{THIS USER FUNCTION SETS THE CHOP LIMITS  FOR EACH CATSCAN SYSTEM COMMODITY.
+NOTE:THESE ARE THE ORIGINAL CHOP LIMITS SET BY VIEWING CONTINUOUS CONTRACT
+FILES AND THEN TESTING THEM USING SYSTEM WRITER. 
+THEY ARE NOT THE ONES SET ON THE 21 FUTURES TRUTH BACK TESTS. 
+
+IF THE CHOPPY INDEX IS BETWEEN -CHOP LIMITS AND + CHOP LIMITS,
+THEN IT'S A CHOPPY MARKET.
+IF THE CHOPPY INDEX IS > + CHOP LIMITS THEN IT'S A BULLISH TRENDING MARKET.
+IF THE CHOPPY INDEX IS <  - CHOP LIMITS THEN IT'S A BEARISH TRENDING MARKET. }
+
+If CurrentBar=1 then begin
+If CommodityNumber = 2     then ChopLimits2 = 45;    {(LC)  Live Cattle}
+If CommodityNumber = 3     then ChopLimits2 = 100;  {(CC)  Cocoa}
+If CommodityNumber = 4     then ChopLimits2 = 50;    {(LH  Live Hogs}
+If CommodityNumber = 5     then ChopLimits2 = 90;    {(PB)  Pork Bellies}
+If CommodityNumber = 7     then ChopLimits2 = 40;    {(CT)  Cotton}
+If CommodityNumber = 8     then ChopLimits2 = 95;    {(HG )or (CP)  Copper}
+If CommodityNumber = 9     then ChopLimits2 = 175;  {(C) or (CN)  Corn}
+If CommodityNumber = 10   then ChopLimits2 = 170;  {(KC)  Coffee}
+If CommodityNumber = 11   then ChopLimits2 =  80;    {(O) or (OT)  Oats}
+If CommodityNumber = 12   then ChopLimits2 = 145;  {(OJ)  Orange Juice}
+If CommodityNumber = 13   then ChopLimits2 = 40;    {(PL)  Platinum}
+If CommodityNumber = 16   then ChopLimits2 = 800;  {(SI) or (SV)  Silver}
+If CommodityNumber = 17   then ChopLimits2 = 1240;{(S) or (SD)  Soybeans}
+If CommodityNumber = 18   then ChopLimits2 = 235;  {(SM)  Soybean Meal}
+If CommodityNumber = 19   then ChopLimits2 = 25;    {(BO) Soybean Oil}
+If CommodityNumber = 20   then ChopLimits2 = 10;    {(SU) Sugar #11}
+If CommodityNumber = 21   then ChopLimits2 = 29;    {(W) or (WD)  Wheat}
+If CommodityNumber = 24   then ChopLimits2 = 40;    {(DM)  D Mark}
+If CommodityNumber = 25   then ChopLimits2 = 35;    {(SF)  Swiss Franc}
+If CommodityNumber = 26   then ChopLimits2 = 55;    {(BP)  British Lb}
+If CommodityNumber = 27   then ChopLimits2 = 175;  {(LB)  Lumber}
+If CommodityNumber = 30   then ChopLimits2 = 405;  {(GC)  Gold}
+If CommodityNumber = 41   then ChopLimits2 = 15;    {(TB)  T Bills}
+If CommodityNumber = 44   then ChopLimits2 = 50;    {(US)  T Bonds}
+If CommodityNumber = 65   then ChopLimits2 = 30;    {(JY)  Japanese Yen}
+If CommodityNumber = 89   then ChopLimits2 = 48;    {(HO)  Heating Oil}
+If CommodityNumber = 127 then ChopLimits2 = 35;    {(S2)  Day Swiss Franc}
+If CommodityNumber = 128 then ChopLimits2 = 55;    {(B2)  Day British Lb}
+If CommodityNumber = 141 then ChopLimits2 = 6;      {(ED  Euro$}
+If CommodityNumber = 144 then ChopLimits2 = 50;    {(TQ)  Day T Bonds}
+If CommodityNumber = 149 then ChopLimits2 = 60;    {(SP)  S&P 500}
+If CommodityNumber = 150 then ChopLimits2 = 40;    {(TY)  T Notes}
+If CommodityNumber = 188 then ChopLimits2 = 10;    {(CL)  Crude Oil}
+If CommodityNumber = 224 then ChopLimits2 = 55;    {(HU)  Unleaded Gas}
+If CommodityNumber = 250 then ChopLimits2 = 40;    {(TT)   Day T Notes}
+If CommodityNumber = 261 then ChopLimits2 = 40;    {(D2)  Day D Mark}
+If CommodityNumber = 262 then ChopLimits2 = 30;    {(J2)   Day Japanese Yen}
+If CommodityNumber = 263 then ChopLimits2 = 35;    {(DX   US $ Index}
+If CommodityNumber = 269 then ChopLimits2 = 6;      {(E2)  Day Euro$}
+end;

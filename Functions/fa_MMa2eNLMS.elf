@@ -1,0 +1,22 @@
+Inputs: price(NumericSeries),len(NumericSimple),mu(NumericSimple),epsilon(NumericSimple);
+
+array: w[50](0),u[50](0);
+
+vars: j(0),k(0),norm2(0),gain(0),num(0),den(0);
+
+for j = len - 1 downto 0 begin
+ 
+ MM.LA.FillArrayFromSerie(u,price,j+1,len);
+ 
+ num = mu * (price[j] - MM.LA.InnerProduct(w,u,len));
+ den = epsilon + MM.LA.SquareNorm(u,len);
+ 
+ MM.LA.RescaleArray(u,num/den,len);
+ 
+ MM.LA.SumArray(w,u,len);
+ 
+end;
+
+MM.LA.FillArrayFromSerie(u,price,1,len);
+
+MM.NLMS = MM.LA.InnerProduct(w,u,len);

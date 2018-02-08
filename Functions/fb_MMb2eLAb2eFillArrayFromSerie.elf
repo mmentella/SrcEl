@@ -1,0 +1,11 @@
+Inputs: _Array[M](NumericArrayRef), Serie(NumericSeries), Start(NumericSimple), Length(NumericSimple);
+
+vars: j(0);
+
+if Start + Length - 1 > M then raiseruntimeerror("FillArrayFromSerie => " + NumToStr(M,0));
+
+for j = 0 to length - 1 begin
+ 
+ _array[j] = serie[start + j];
+ 
+end;

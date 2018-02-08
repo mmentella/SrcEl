@@ -1,0 +1,31 @@
+Inputs: Price(NumericSeries), Len(NumericSimple), TargetB(NumericSimple);
+Variables: X(0), Num1(0), Num2(0), SumBars(0), SumSqrBars(0), SumY(0), Sum1(0), Sum2(0), Slope(0), Intercept(0);
+
+If Len = 0 Then
+	LinearRegValueFCC = 0;
+
+Sum1 = 0;
+
+If CurrentBar = 1 Then Begin
+	SumBars = SumBars[1];
+	SumBars = Len * (Len - 1) * .5;
+	SumSqrBars = (Len - 1) * Len * (2 * Len - 1) / 6;
+End;
+
+For X = 0 To Len - 1 Begin
+	Sum1 = Sum1 + X * Price[X];
+End;
+
+SumY = Summation(Price, Len);
+Sum2 = SumBars * SumY;
+Num1 = Len * Sum1 - Sum2;
+Num2 = SumBars * SumBars - Len * SumSqrBars;
+
+If Num2 <> 0 Then 
+	Slope = Num1 / Num2
+Else 
+	Slope = 0;
+
+Intercept = (SumY - Slope * SumBars) / Len;
+
+LinearRegValueFCC = Intercept + Slope * (Len - 1 + CurrentBar - BarNumber - TargetB);

@@ -1,0 +1,10 @@
+[LegacyColorValue = TRUE];
+
+{ TSMProjMACross: Projected Single Moving Average Price Cross
+  Copyright 1999-2004, P.J.Kaufman. All rights reserved.
+}
+  inputs: price(numericseries), length(numericsimple);
+  vars:   sum(0);
+
+  sum = summation(price,length - 1);
+  TSMProjMACross = sum[1] / (length - 1);

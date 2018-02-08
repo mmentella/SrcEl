@@ -1,0 +1,28 @@
+inputs: revposentry(numericsimple),stoploss(numericsimple),breakeven(NumericSimple),trailingstop(NumericSimple);
+
+vars: minval(0),maxval(0);
+
+if revposentry  = 0 or
+   stoploss     = 0 or
+   breakeven    = 0 or
+   trailingstop = 0 then abort;
+
+if marketposition = 1 then begin
+ 
+ minval = minlist(revposentry,stoploss,breakeven,trailingstop);
+ 
+ if minval = revposentry  then MM.GetNearestStop = 1 else
+ if minval = stoploss     then MM.GetNearestStop = 2 else
+ if minval = breakeven    then MM.GetNearestStop = 3 else
+ if minval = trailingstop then MM.GetNearestStop = 4; 
+ 
+end else if marketposition = -1 then begin
+ 
+ maxval = maxlist(revposentry,stoploss,breakeven,trailingstop);
+ 
+ if maxval = revposentry  then MM.GetNearestStop = 1 else
+ if maxval = stoploss     then MM.GetNearestStop = 2 else
+ if maxval = breakeven    then MM.GetNearestStop = 3 else
+ if maxval = trailingstop then MM.GetNearestStop = 4;
+ 
+end;

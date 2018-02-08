@@ -1,0 +1,44 @@
+{*******************************************************************
+Description: Relative Strength Indicator
+Provided By: Omega Research, Inc. (c) Copyright 1999
+********************************************************************}
+
+Inputs: Price(NumericSeries), Length(NumericSimple);
+
+Variables: Counter(0), DownAmt(0), UpAmt(0), UpSum(0), DownSum(0), UpAvg(0), DownAvg(0);
+
+If CurrentBar = 1 AND Length > 0 Then Begin
+	UpSum = 0;
+	DownSum = 0;
+	For Counter = 0 To Length - 1 Begin
+		UpAmt = Price[Counter] - Price[Counter+1];
+		If UpAmt >= 0 Then 
+			DownAmt = 0
+		Else Begin
+			DownAmt = -UpAmt;
+			UpAmt = 0;
+		End; 
+		UpSum = UpSum + UpAmt;
+		DownSum = DownSum + DownAmt;
+	End;
+	UpAvg = UpSum / Length;
+	DownAvg = DownSum / Length;
+End
+
+Else 
+	If CurrentBar > 1 AND Length > 0 Then Begin    
+		UpAmt = Price[0] - Price[1];
+		If UpAmt >= 0 Then
+			DownAmt = 0
+		Else Begin
+			DownAmt = -UpAmt;
+			UpAmt = 0;
+		End;
+		UpAvg = (UpAvg[1] * (Length - 1) + UpAmt) / Length;
+		DownAvg = (DownAvg[1] * (Length - 1) + DownAmt) / Length;
+	End;
+
+If UpAvg + DownAvg <> 0 Then
+	RSI_TS = 100 * UpAvg / (UpAvg + DownAvg)
+Else
+	RSI_TS = 0;

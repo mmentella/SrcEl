@@ -1,0 +1,15 @@
+Inputs: _Array[M](NumericArrayRef), Length(NumericSimple);
+
+vars: s("");
+
+s = "";
+
+for value1 = 0 to length - 1 begin
+ 
+ s = s + "[" + NumToStr(value1,0) + "] -> " + NumToStr(_array[value1],4) + " ";
+
+end;
+
+s = s + NewLine;
+
+print(s); 

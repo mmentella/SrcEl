@@ -1,0 +1,4 @@
+Input: _strAccount(StringSimple);
+
+RaiseRuntimeError("GetBDMarginRequirement function is currently not implemented");
+GetBDMarginRequirement = 0;

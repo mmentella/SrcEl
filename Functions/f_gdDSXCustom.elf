@@ -1,0 +1,11 @@
+
+Inputs: Price(NumericSeries), Length(NumericSimple), Weight(NumericSimple);
+Inputs: PriceHigh(NumericSeries), PriceLow(NumericSeries), PriceClose(NumericSeries);
+
+Var: ADXval(0);
+
+if LinearRegSlope(Price, Length) >= 0 then
+	ADXval = gdADXCustom(PriceHigh, PriceLow, PriceClose, Length)
+else
+	ADXval = -gdADXCustom(PriceHigh, PriceLow, PriceClose, Length);
+gdDSXCustom = gdDSXCustom[1] + Weight * (ADXval - gdDSXCustom[1]);

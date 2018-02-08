@@ -1,0 +1,12 @@
+[LegacyColorValue = TRUE];
+
+{ TSMPriceDensity
+  Copyright 1999-2004 P.J.Kaufman. All rights reserved. }
+
+  input: period(numericsimple);
+  vars:	vlty(0), pd(0);
+
+  vlty = AvgTrueRange(period);
+  pd = 1 - vlty / (highest(high,period) - lowest(low,period));
+  TSMPriceDensity = pd;
+

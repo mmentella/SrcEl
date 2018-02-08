@@ -1,0 +1,10 @@
+Input: _AccountIndex(Numeric);
+
+begin 
+
+GetAccount = "";
+if tm_accounts_count <> 0 and tm_accounts_count >= _AccountIndex then begin
+	GetAccount = tm_account_str_value(_AccountIndex, 2000);
+end; 
+
+end

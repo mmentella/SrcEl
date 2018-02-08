@@ -1,0 +1,20 @@
+Inputs: Reason(StringSimple),Price(NumericSimple),StopLimit(StringSimple);
+
+vars: filename("C:\MC\"+getstrategyname+".txt"),var0(0);
+
+if currentbar = 1 then begin
+ 
+ FileDelete(filename);
+ 
+ if PriceScale > 10 then var0 = Log(PriceScale)/Log(10)
+ else if PriceScale < 10 then var0 = Log(PriceScale)/Log(2);
+ 
+end;
+
+if getappinfo(airealtimecalc) = 1 then
+ FileAppend(filename,getstrategyname + ";" +
+            symbolroot + ";" +
+            getexchangename + ";" +
+            Reason + ";" +
+            NumToStr(Price,var0) + ";" + 
+            StopLimit + ";" + NewLine);

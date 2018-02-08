@@ -1,0 +1,11 @@
+
+Inputs: Price(NumericSeries), Length(NumericSimple);
+
+Vars: counter(0), min(0);
+
+min = Price;
+for counter = Length - 1 downto 1 begin
+	if Price[counter] < min then
+		min = Price[counter];
+end;
+gd.Lowest = min;

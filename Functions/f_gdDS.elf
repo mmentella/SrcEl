@@ -1,0 +1,12 @@
+[LegacyColorValue = true]; 
+
+
+Inputs: Price(NumericSeries), Length(NumericSimple), Weight(NumericSimple);
+
+Var: ADXval(0);
+
+if LinearRegSlope(Price, Length) >= 0 then
+	ADXval = ADX(Length)
+else
+	ADXval = -ADX(Length);
+gdDS = gdDS[1] + Weight * (ADXval - gdDS[1]);

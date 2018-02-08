@@ -1,0 +1,9 @@
+[LegacyColorValue = TRUE];
+
+{*******************************************************************
+Description	: Maximum Contract Profit
+Provided By	: Omega Research, Inc. (c) Copyright 1999 
+********************************************************************}
+
+If CurrentContracts <> 0 Then
+	MaxContractProfit = MaxPositionProfit / CurrentContracts;

@@ -1,0 +1,25 @@
+inputs: 
+	_2DArray[MaxSize1, MaxSize2]( numericarrayref ), 
+	Size( numericsimple ),                        
+	HiLo( numericsimple ) ;                                                     
+
+for Value1 = 0 to Size - 2 
+	begin
+	for Value2 = Value1 + 1 to Size - 1
+		begin
+		condition1 = ( HiLo = 1 and _2DArray[Value1, 0] < _2DArray[Value2, 0] )
+		 or ( HiLo = -1 and _2DArray[Value1, 0] > _2DArray[Value2, 0] ) ;
+		 
+		if condition1 then 
+			begin 
+			value11 = _2DArray[Value1, 0];
+			_2DArray[Value1, 0] = _2DArray[Value2, 0];
+			_2DArray[Value2, 0] = value11;
+			
+			value22 = _2DArray[Value1, 1];
+			_2DArray[Value1, 1] = _2DArray[Value2, 1];
+			_2DArray[Value2, 1] = value22;
+			end ;
+		end ;
+	end ;
+Sort2DArrayByKey = 1 ;

@@ -1,0 +1,9 @@
+Inputs: price(NumericSeries),period(NumericSeries),_oInPhase(NumericRef),_oQuadrature(NumericRef);
+
+vars: varq(0),vari(0);
+
+varq = 0.0962*price + 0.5769*price[2] - 0.5769*price[4] - 0.0962*price[6];
+vari = price[3];
+
+if period <> 0 then _oQuadrature = varq*(.5 + .8*period[1]) else _oQuadrature = varq;
+_oInPhase = vari;

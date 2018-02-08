@@ -1,0 +1,73 @@
+inputs: 
+	CurrDate( numeric ), 
+	FutureDate( numeric ), 
+	FirstDivMonth( numeric ), 
+	FirstDivDay( numeric ), 
+	DivAmt( numeric ), 
+	Rate( numeric ), 
+	pv( truefalse ) ;
+
+variables: 
+	var0( false ), 
+	var1( 0 ), 
+	var2( 0 ), 
+	var3( 0 ), 
+	var4( 0 ), 
+	var5( 0 ), 
+	var6( 0 ), 
+	var7( 0 ), 
+	var8( 0 ), 
+	var9( 0 ), 
+	var10( 0 ), 
+	var11( 2.71828183 ), 
+	var12( 0 ), 
+	var13( 0 ), 
+	var14( 0 ), 
+	var15( 1 / 365 ) ;
+
+                
+var2	= FirstDivMonth	+ 3 ;
+if var2 > 12 then 
+	var2 = var2 - 12 ;
+var3 = var2 + 3 ;
+if var3 > 12 then 
+	var3 = var3 - 12 ;
+var4 = var3 + 3 ;
+if var4 > 12 then 
+	var4 = var4 - 12 ;
+
+var9 = 0 ;
+var1 = 0 ;
+var0 = false ;
+var13 = DateToJulian( CurrDate ) ;
+var14 = DateToJulian( FutureDate ) ;
+
+for var10 = var13 to var14 
+	begin
+	var9 = var9 + 1 ;
+	var6 = Month( JulianToDate( var10 ) ) ;
+	condition1 = var6 = FirstDivMonth 
+		or var6 = var2 
+		or var6 = var3 
+		or var6 = var4 ;
+	if condition1
+	then
+		begin
+		var7 = DayOfMonth( var10 ) ;
+		                                                                             
+		                              
+		var8 = MinList( FirstDivDay, LastDayOfMonth( var6 ) ) ;
+		if var7 = var8 then
+			begin
+			if pv then 
+				begin
+				var12 = Power( var11, -Rate * var9 * var15 ) ;
+				var1 = var1 + ( DivAmt * var12 ) ;
+				end
+		  	else
+				var1 = var1 + DivAmt ;
+			end ;
+		end ;
+	end ;
+
+OS_DivsBetweenDates = var1 ;

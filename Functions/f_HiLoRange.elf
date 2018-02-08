@@ -1,0 +1,12 @@
+[LegacyColorValue = TRUE];
+{*******************************************************************
+Description	: HiLoRange Function for HiLo Limit Indicator (by Dr. Koch )
+Coded By	: Matteo Zucchini
+********************************************************************}
+Inputs: Length(NumericSimple);
+Variables: Counter(0), MyRange(-999999);
+
+MyRange = -999999;
+   MyRange = HighestFC(High,Length) - LowestFC(Low,Length);	
+
+HiLoRange = MyRange;

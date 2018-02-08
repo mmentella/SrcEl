@@ -1,0 +1,10 @@
+
+Inputs: Price(NumericSeries), Length(NumericSimple), Weight(NumericSimple);
+
+Var: ADXval(0);
+
+if LinearRegSlope(Price, Length) >= 0 then
+	ADXval = gdADX(Length)
+else
+	ADXval = -gdADX(Length);
+gdDSX = gdDSX[1] + Weight * (ADXval - gdDSX[1]);

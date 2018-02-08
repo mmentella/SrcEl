@@ -1,0 +1,17 @@
+{*******************************************************************
+Description: Directional Movement Index
+Provided By: Giulio D'Urso (c) Copyright 2009
+********************************************************************}
+
+Inputs: PriceHigh(NumericSeries), PriceLow(NumericSeries), PriceClose(NumericSeries), Length(NumericSimple);                                             
+
+Variables: DMIP(0), DMIM(0);
+
+DMIP = gdDMIplusCustom(PriceHigh, PriceLow, PriceClose, Length);
+DMIM = gdDMIminusCustom(PriceHigh, PriceLow, PriceClose, Length);
+
+If DMIP + DMIM = 0 Then 
+	gdDMICustom = 0
+Else
+	{gdDMI = 100 * AbsValue(DMIP - DMIM) / (DMIP + DMIM);}
+	gdDMICustom = 100 * (DMIP - DMIM) / (DMIP + DMIM);

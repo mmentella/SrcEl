@@ -1,0 +1,25 @@
+{*******************************************************************
+Description: Average Directional Index
+Provided By: Giulio D'Urso (c) Copyright 2009
+********************************************************************}
+
+Inputs: PriceHigh(NumericSeries), PriceLow(NumericSeries), PriceClose(NumericSeries), Length(NumericSimple);
+
+Variables: Counter(0), CummDMI(0), Return(0), LastLen(0);
+
+Return = 0;
+
+If CurrentBar >= 1 AND Length > 0 Then Begin
+	If CurrentBar < Length Or Length <> LastLen Then begin
+		LastLen = MinList(CurrentBar, Length);
+		CummDMI = 0;
+		for Counter = 0 To LastLen - 1 Begin
+			CummDMI = CummDMI + AbsValue(gdDMICustom(PriceHigh, PriceLow, PriceClose, Length)[Counter]);
+		End;
+		Return = CummDMI / LastLen;
+	End
+	Else 
+		Return = (gdADXCustom[1] * (Length - 1) + AbsValue(gdDMICustom(PriceHigh, PriceLow, PriceClose, Length))) / Length;
+End;
+
+gdADXCustom = Return;

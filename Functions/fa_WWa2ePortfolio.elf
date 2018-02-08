@@ -1,0 +1,43 @@
+Inputs: Strategy(StringSimple),Portfolio(StringSimple),Conversion(NumericSimple),Sett_y1(NumericSimple),Sett_y2(NumericSimple);
+
+vars:   filename("C:\Portafoglio\BackTest\"+IffString(portfolio="","",portfolio+"\")),fullpath("");
+vars:   start(0),daily(0),ee(0);
+vars:	 TradeCost((commission+slippage)*2);
+
+if currentbar = 1 and Strategy <> "" then begin
+ fullpath = filename + "btc_" + strategy + ".txt";
+ FileAppend(filename+"MessageCenter.txt","BTCSTART "+Strategy+" "+MM.CurrentDateTimeToStr_IT+newline);
+ FileDelete(fullpath); 
+end else if getappinfo(airealtimecalc) = 1 then fullpath = filename + "rtc_"+strategy+".txt";
+
+if d<>d[1] then begin
+  if Sett_y2<>0 then start=Sett_y2 else start=Open;
+  ee=start;
+end;
+
+if marketposition<>0 then begin
+ if d=entrydate then start=entryprice else start=Sett_y2;
+end;
+
+//METTO close[1] cosi il controllo lo faccia su una candela fa nn su quella appena formata
+if Time>=sess1endtime then ee=Sett_y1 else ee=close;
+
+
+
+if marketposition=1 then
+  daily = daily[1] + conversion*((ee-start)*bigpointvalue-TradeCost)*currentcontracts;
+if marketposition=-1 then
+  daily = daily[1] + conversion*((start-ee)*bigpointvalue-TradeCost)*currentcontracts;
+if marketposition=0 and d<>d[1] then
+  daily=0
+else if marketposition=0 then daily=daily[1];
+
+
+if Strategy <> "" then begin
+ FileAppend(fullpath,MM.ELDateToString_IT(date)+" "+MM.TimeToStr_IT(t)+" "+NumToStr(daily,2)+NewLine);
+ if LastBarOnChart and getappinfo(airealtimecalc) < 1 then
+  FileAppend(filename+"MessageCenter.txt","BTCEND "+strategy+" "+MM.CurrentDateTimeToStr_IT+newline);
+ if getappinfo(airealtimecalc) = 1 then FileAppend(filename+"MessageCenter.txt","RTCNEW "+Strategy+" "+MM.CurrentDateTimeToStr_IT+newline);
+end;
+
+WW.Portfolio = daily;

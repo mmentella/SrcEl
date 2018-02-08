@@ -1,0 +1,36 @@
+Input: CowLenAvg(NumericSimple); 
+Vars: count(0), WeekMove(0), AvgWeekMove(0), Htoday(high), Ltoday(low), MinMin(99999), MaxMax(0);
+Array: max[5](Close), min[5](Close), appo[30](0);
+
+{***MM-adattativo***}
+	if Date > Date[1] then begin
+		
+		for count=4 downto 1 begin
+			max[count] = max[count-1];
+			min[count] = min[count-1];
+		end;
+		max[0]=htoday;
+		min[0]=ltoday;
+		htoday=High;
+		ltoday=Low;
+		minmin=99999;
+		maxmax=0;
+		for count=0 to 4 begin
+			if max[count]>maxmax then maxmax=max[count];
+			if min[count]<minmin then minmin=min[count];
+		end;
+		WeekMove=maxmax-minmin;
+		for count=CowLenAvg-1 downto 1 begin
+			appo[count]=appo[count-1]; 
+		end;
+		appo[0]=WeekMove;
+		
+		AvgWeekMove = array_sum(appo,0,CowLenAvg-1)/CowLenAvg;
+		
+	end else begin
+		if High > htoday then htoday = High;
+		if Low < ltoday then ltoday = Low;
+	end;
+{*******************}
+
+WeekCow = AvgWeekMove;

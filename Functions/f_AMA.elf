@@ -1,0 +1,22 @@
+[LegacyColorValue = true]; 
+
+{************************************************************************
+                      ADAPTIVE MOVING AVERAGE
+					  System by Perry Kaufman
+*************************************************************************}
+
+
+Inputs: Period(Numeric);
+Vars: Noise(0), Signal(0), Diff(0), efRatio(0), Smooth(1), Fastest(.6667), Slowest(.0645), AdaptMA(0);
+
+Diff = AbsValue(C - C[1]);
+IF CurrentBar <= Period Then AdaptMA = C;
+IF CurrentBar > Period Then Begin
+Signal = AbsValue(C - C[Period]);
+Noise = Summation(Diff, Period);
+efRatio = Signal / Noise;
+Smooth = Power(efRatio * (Fastest - Slowest) + Slowest, 2);
+AdaptMA = AdaptMA[1] + Smooth * (C - AdaptMA[1]);
+End;
+AMA = AdaptMA;
+

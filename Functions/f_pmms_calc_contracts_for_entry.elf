@@ -1,0 +1,11 @@
+Inputs: percent(NumericSimple), strategy_index(NumericSimple);
+
+var: MoneyForInvest(0), MoneyCostForInvestPerCtrct(0);
+MoneyForInvest = Portfolio_Equity * percent / 100;
+
+MoneyCostForInvestPerCtrct = pmms_get_strategy_named_num(strategy_index, "MoneyCostForInvestPerCtrct");
+
+if 0 < MoneyCostForInvestPerCtrct then
+	pmms_calc_contracts_for_entry = IntPortion( MoneyForInvest / MoneyCostForInvestPerCtrct )
+else
+	pmms_calc_contracts_for_entry = 0;

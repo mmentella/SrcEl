@@ -1,0 +1,3 @@
+inputs: PriceValue( numericseries ), Len( numericsimple ), NumDevs( numericsimple ) ;
+
+BollingerBandC = Average( PriceValue, Len ) + (NumDevs * STDDevConv( PriceValue, Len)) ;

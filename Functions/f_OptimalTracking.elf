@@ -1,0 +1,9 @@
+[LegacyColorValue = TRUE];
+vars: Price(0),lambda(0),alpha(0);
+Price = ((h+l)/2);
+Value1 = 0.2211992169*(Price - Price[1]) + 0.7788*Value1[1];
+Value2 = 0.2211992169*((H - L)/2) + 0.7788*Value2[1];
+if Value2 <>0 then lambda = AbsValue(Value1 / Value2);
+alpha = ( -lambda*lambda + SquareRoot(lambda*lambda*lambda*lambda + 16*lambda*lambda))/8;
+Value3 = alpha*Price + (1-alpha)*Value3[1];
+OptimalTracking = Value3;

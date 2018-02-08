@@ -1,0 +1,38 @@
+
+Inputs: LoopBackDays(NumericSimple), AvgLength(NumericSimple);
+
+
+Variables: MAX_DAY_BAK(22), MAX_AVG_LEN(132);
+Arrays: dayMax[22](High), dayMin[22](Low); 
+Arrays: excursions[132](0);
+
+Variables: BackLast(LoopBackDays - 1);  // Should never change along the time!!!
+
+
+Vars: dMax(High), dMin(Low);
+
+Vars: excCnt(-1), excSum(0);
+Vars: excursion(dMax - dMin), avgVal(excursion);
+Vars: max(0), min(0), cnt(0);
+
+
+if Date = Date[1] then begin
+	if High > dMax then dMax = High;
+	if Low < dMin then dMin = Low;
+end
+else begin
+	max = dMax; min = dMin;
+	for cnt = BackLast downto 1 begin
+		dayMax[cnt] = dayMax[cnt - 1]; if dayMax[cnt] > max then max = dayMax[cnt];
+		dayMin[cnt] = dayMin[cnt - 1]; if dayMin[cnt] < min then min = dayMin[cnt];
+	end;
+	dayMax[0] = dMax; dayMin[0] = dMin;
+	excursion = max - min;
+	excCnt = excCnt + 1; if excCnt >= AvgLength then excCnt = 0;
+	excSum = excSum - excursions[excCnt] + excursion;
+	excursions[excCnt] = excursion;
+	avgVal = excSum / AvgLength;
+	dMax = High; dMin = Low;
+end;
+
+ExcursionAverage = avgVal;

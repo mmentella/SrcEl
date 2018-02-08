@@ -1,0 +1,6 @@
+value1 = IntPortion(date/10000) - IntPortion(date[1]/10000);
+value2 = Month(date) - Month(date[1]);
+
+if 0 < value1 then
+	value2 = 12 * value1 + value2;
+MonthsCount = value2;

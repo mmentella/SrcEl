@@ -1,0 +1,13 @@
+Input: x      (NumericSimple),   { input to function }
+       NTerms (NumericSimple);   { # terms in series }
+ 
+ Var:  pi   (3.1415926536),
+       Sum  (0),
+       ii   (0);
+ 
+ Sum = 0.;
+ For ii = 0 to NTerms Begin
+    Sum = Sum + 1./(Power(((ii + 0.5)*pi), 2) + Power(x, 2));
+ End;
+tanh = Sum * 2 * x; 
+ 

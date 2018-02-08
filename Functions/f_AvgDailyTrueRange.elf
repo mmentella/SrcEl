@@ -1,0 +1,55 @@
+{***************************************************************
+ Description: Average Daily True Range - Time Frame independent
+ Provided By: Giulio D'Urso (c) Copyright 2009
+ ***************************************************************}
+
+Inputs: NumDays(NumericSimple);
+
+Array: rangeArray[260](0);  { Up to 1 year }
+Vars: curHigh(High), curLow(Low), lastDate(0);
+Vars: tH(0), tL(0);
+Vars: sum(0), n(1), k(0);
+
+if CurrentBar < 2 then begin
+	curHigh = High;
+	curLow = Low;
+	rangeArray[0] = curHigh - curLow;
+	for k = 1 to 259 begin
+		rangeArray[k] = rangeArray[0];
+	end;
+end;
+
+if Date > lastDate then begin
+	lastDate = Date;
+	for k = 259 downto 1 begin
+		rangeArray[k] = rangeArray[k - 1];
+	end;
+	if Close[1] > High then
+		curHigh = Close[1]
+	else
+		curHigh = High;
+	if Close[1] < Low then 
+		curLow = Close[1] 
+	else
+		curLow = Low;
+end
+else begin
+	if High > curHigh then
+		curHigh = High;
+	if Low < curLow then
+		curLow = Low;
+end;
+
+rangeArray[0] = curHigh - curLow;
+if NumDays = 0 then
+	sum = rangeArray[0]
+else begin
+	sum = rangeArray[1];
+	n = MinList(259, NumDays);
+	for k = 2 to n begin
+		sum = sum + rangeArray[k];
+	end;
+	n = n - 1;
+end;
+
+AvgDailyTrueRange = sum / (n + 1);

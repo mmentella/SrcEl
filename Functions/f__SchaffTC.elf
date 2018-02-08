@@ -1,0 +1,33 @@
+{*******************************************************************
+Description : This is the Schaff Trend Cycle function
+Provided By : FX-Strategy.com (c) Copyright 1999
+********************************************************************}
+Inputs: TCLen(NumericSimple), MA1(NumericSimple), MA2(NumericSimple);
+
+Variables: XMac(0), Frac1(0), PF(0), PFF(0), Frac2(0), Factor(.5);
+
+{Calculate a MACD Line}
+XMac = MACD(c,MA1,MA2) ;
+
+{1st Stochastic: Calculate Stochastic of a MACD}
+Value1 = Lowest(XMac, TCLen);
+Value2 = Highest(XMac, TCLen) - Value1;
+
+{%FastK of MACD}
+Frac1 = IFF(Value2 > 0, ((XMac - Value1) / Value2) * 100, Frac1[1]);
+
+{Smoothed calculation for %FastD of MACD}
+PF = IFF(CurrentBar<=1, Frac1, PF[1] + (Factor * (Frac1 - PF[1])));
+
+{2nd Stochastic: Calculate Stochastic of Smoothed Percent FastD, ?PF?, above.}
+Value3 = Lowest(PF, TCLen);
+Value4 = Highest(PF, TCLen) - Value3;
+
+{%FastK of PF}
+Frac2 = IFF(Value4 > 0, ((PF - Value3) / Value4) * 100, Frac2[1]);
+
+{Smoothed calculation for %FastD of PF}
+PFF = IFF(CurrentBar<=1, Frac2, PFF[1] + (Factor * (Frac2 - PFF[1])));
+
+{The STC function is the %FastD of PF}
+_SchaffTC= PFF;

@@ -1,0 +1,14 @@
+Input: _SymbolName(StringSimple), _Account(StringSimple);
+
+begin
+
+GetPositionOpenPL = 0;
+for value1 = 1 to tm_positions_count begin
+	if 	_SymbolName = tm_position_str_value(value1, 2000) and 
+		_Account = tm_position_str_value(value1, 2001) then begin
+		GetPositionOpenPL = tm_position_num_value(value1, 1002);
+		break;
+	end;
+end; 
+
+end

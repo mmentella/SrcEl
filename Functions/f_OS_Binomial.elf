@@ -1,0 +1,110 @@
+inputs: 
+	AssetPr( numeric ), 
+	StrikePr( numeric ), 
+	Volty( numeric ), 
+	DaysToExp( numeric ), 
+	IntRate( numeric ), 
+	Carry( numeric ), 
+	OptType( numeric ), 
+	EuroAmer01( numeric ), 
+	Branches( numeric ), 
+	oBinoTV( numericref ) ;
+
+variables: 
+	var0( 0 ), 
+	var1( 0 ), 
+	var2( 0 ), 
+	var3( 0 ), 
+	var4( 0 ), 
+	var5( 0 ), 
+	var6( 0 ), 
+	var7( 0 ), 
+	var8( 0 ), 
+	var9( 0 ), 
+	var10( 1 / 365 ), 
+	var11( false ), 
+	var12( 0 ), 
+	var13( 0 ), 
+	var14( 0 ) ;
+
+arrays: 
+	arr0[201]( 0 ) ;
+
+if AssetPr > 0 
+	and StrikePr > 0 
+	and Volty > 0 
+	and DaysToExp > 0 
+	and IntRate > 0 
+	and Carry > 0 
+then 
+	begin
+	var9 = DaysToExp * var10 ;
+	var12 = 1 ;
+	var13 = Branches ;
+	if var13 > 200 then 
+		var13 = 200 ;
+	if var13 < 5 then 
+		var13 = 5 ;
+	var11 = true ;
+	if OptType = Call then 
+		var8 = 1 
+	else 
+		var8 = -1 ;	
+	var4 = var9 / var13 ;
+	if var4 > 0 then 
+		var1 = ExpValue( Volty * SquareRoot( var4 ) ) ;
+	if var1 <> 0 then 
+		var2 = 1 / var1 ;
+	var0 = ExpValue( Carry * var4 ) ;
+	if var1-var2 <> 0 then 
+		var3 = ( var0 - var2 ) / ( var1 - var2 ) ;
+	var5 = ExpValue( -IntRate * var4 ) ;
+	for var6 = 0 to var13 
+		begin
+		arr0[var6] = MaxList( 0, 
+		 var8 * ( AssetPr * Power( var1, var6 ) * Power( var2, var13 - var6 ) - StrikePr ) ) ;
+		end ;	
+	if EuroAmer01 = 0 then 
+		begin
+		for var7 = var13 - 1 downto 0 
+			begin
+			for var6 = 0 to var7 
+				begin
+				arr0[var6] = ( var3 * arr0[ var6 + 1 ] + ( 1 - var3 ) 
+				 * arr0[var6] ) * var5 ;
+				end ;
+			end ;
+		end 
+	else if EuroAmer01 = 1 then 
+		begin
+		for var7 = var13 - 1 downto 0 
+			begin
+			for var6 = 0 to var7 
+				begin
+				Value1 = var8 * ( AssetPr * Power( var1, var6 ) * 
+				 Power( var2, AbsValue( var6 - var7 ) ) - StrikePr ) ;
+				Value2 = ( var3 * arr0[ var6 + 1 ] + ( 1 - var3 ) * arr0[var6] ) 
+				 * var5 ;
+				arr0[var6] = MaxList( Value1, Value2 ) ;
+				end ;
+			end ;
+		end ;
+	var14 = arr0[ 0 ] ;
+	                  
+	condition1 = OptType = Put and var14 > StrikePr ;                                        
+	if condition1 then 
+		var14 = StrikePr ; 
+	                            
+	condition1 = var14 < OS_Intrinsic( AssetPr, OptType, StrikePr ) ;
+	if condition1 then 
+		var14 = OS_Intrinsic( AssetPr, OptType, StrikePr ) ;
+	oBinoTV = var14 ; 					
+	end ;
+
+condition1 = var12 = 0 and DaysToExp >= 0 ;
+if condition1 then
+	oBinoTV = OS_Intrinsic( AssetPr, OptType, StrikePr ) ;
+if var11 then 
+	OS_Binomial = 0 
+else 
+	OS_Binomial = -1 ;

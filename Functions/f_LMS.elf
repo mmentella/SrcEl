@@ -1,0 +1,59 @@
+[LegacyColorValue = true]; 
+
+Inputs:	Price(NumericSeries),
+		Length(NumericSimple),
+		Prediction(NumericSimple),
+		alpha(NumericSimple);
+
+Vars:	SigPower(0),SigPower1(0),
+		Mu(0),
+		XBar(0),XBar1(0),
+		count(0),
+		count1(0);
+
+Arrays:	G[100](0),
+		SigPredict[100](0);
+
+{Compute average power for normalization}
+SigPower = 0;
+SigPower1 = 0;
+For count = 0 to Length - 1 begin
+	SigPower1 = SigPower + Price[count]*Price[count];
+	SigPower = SigPower1;
+end;
+SigPower =SigPower1 / Length;
+
+{Convergence Factor}
+if SigPower > 0 then Mu = alpha / (SigPower*Length);
+
+If CurrentBar > Length then begin
+	XBar = 0;
+	XBar1 = 0;
+	{Compute signal estimate}
+	For count = 1 to Length begin
+		XBar1 = XBar + Price[count]*G[count];
+		XBar = XBar1;
+	end;
+	{Compute gain coefficients}
+	For count = 1 to Length begin
+		G[count] = G[count] + Mu*(Price - XBar)*Price[count];
+		//G[count] = G[count];
+	end;
+	{Compute signal prediction waveform}
+	For count = 0 to Length begin
+		SigPredict[count] = Price[Length - count];
+ 	end;
+	{Extend signal prediction into the future}
+	For count = Length + 1 to Length + 5 begin
+		SigPredict[count] = 0;
+		//SigPredict[count] = 0;
+		For count1 = 1 to Length begin
+			SigPredict[count] = SigPredict[count] + SigPredict[count - count1]*G[count1];
+			//SigPredict[count] = SigPredict[count];
+		end;
+	end;
+	Value2 = SigPredict[Length + Prediction];
+	
+	LMS = value2;
+
+end else lms = Price;

@@ -1,0 +1,15 @@
+[LegacyColorValue = TRUE];
+
+{ TSMAnnualizedCROR : Annualized compounded rate of return
+  Copyright 1998-2004, PJ Kaufman. All rights reserved }
+
+	inputs: begeqty(numeric), begdate(numericsimple), endeqty(numeric), enddate(numericsimple);
+	vars: d1(0), d2(0), return(0);
+
+	TSMAnnualizedCROR = 0;
+	d1 = DateToJulian(begdate);
+	d2 = DateToJulian(enddate);
+	if begeqty <> 0 and d1 <> d2 then begin
+		return = (endeqty - begeqty) / begeqty;
+		TSMAnnualizedCROR =  power(1 + return,365 / (d2 - d1) );
+		end;

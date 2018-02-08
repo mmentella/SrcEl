@@ -1,0 +1,13 @@
+[LegacyColorValue = TRUE];
+
+{ TSMQuadraticMean: The root-mean-square
+  Copyright 1998-2004, PJ Kaufman. All rights reserved }
+
+	inputs: price(numericseries), length(numericsimple);
+	vars:	squared(0), n(0), sum(0);
+
+	n = length;
+	if currentbar <  length then n = currentbar;
+	squared = price*price;
+	sum = summation(squared,n);
+	TSMQuadraticMean = squareroot(sum / n);

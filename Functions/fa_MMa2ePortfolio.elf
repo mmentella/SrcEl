@@ -1,0 +1,25 @@
+Inputs: Strategy(StringSimple),Portfolio(StringSimple),Conversion(NumericSimple);
+
+vars:   filename("C:\Portafoglio\BackTest\"+IffString(portfolio="","",portfolio+"\")),fullpath("");
+vars:   start(0),daily(0),now(0);
+
+if currentbar = 1 and Strategy <> "" then begin
+ fullpath = filename + "btc_" + strategy + ".txt";
+ FileAppend(filename+"MessageCenter.txt","BTCSTART "+Strategy+" "+MM.CurrentDateTimeToStr_IT+newline);
+ FileDelete(fullpath); 
+end else if getappinfo(airealtimecalc) = 1 then fullpath = filename + "rtc_"+strategy+".txt";
+
+if d <> d[1] then start = now;
+
+now = i_OpenEquity;
+
+daily = conversion*(now - start);
+
+if Strategy <> "" then begin
+ FileAppend(fullpath,MM.ELDateToString_IT(date)+" "+MM.TimeToStr_IT(t)+" "+NumToStr(daily,2)+NewLine);
+ if LastBarOnChart and getappinfo(airealtimecalc) < 1 then
+  FileAppend(filename+"MessageCenter.txt","BTCEND "+strategy+" "+MM.CurrentDateTimeToStr_IT+newline);
+ if getappinfo(airealtimecalc) = 1 then FileAppend(filename+"MessageCenter.txt","RTCNEW "+Strategy+" "+MM.CurrentDateTimeToStr_IT+newline);
+end;
+
+MM.Portfolio = daily;

@@ -1,0 +1,43 @@
+[LegacyColorValue = TRUE];
+
+{ Optimal Tracking Filter
+ published by John Ehlers
+ Based on a Kalman Filter (Dr. R. E. Kalman, 1960)
+ and Kalatas Tracking Index (Paul. R. Kalata, 1984)
+ 15. Aug 2002 DrKoch
+ 20.09.2002 RK add period as argument}
+{ period - of internal EMAs, should be >= 4 }
+Inputs: Period(NumericSimple);
+
+  {var period: integer;} { EMA period }
+  var: lambda(0), alpha(0);
+  var: value1(0), value2(0), value3(0);
+  var: smooth_constant(0), smooth_constant1(0);
+  var: value1_old(0), value2_old(0), value3_old(0);
+
+
+  { Init local variables }
+  if currentbar = 1 then
+  begin
+    value3_old = (High[1]+Low[1])/2;
+    { EMA coefficients}
+    smooth_constant1 = power(2.71828,(-1.0 / period)); { Time constant}
+    smooth_constant = 1.0 -  smooth_constant1;
+  end;
+
+  { EMA of maneuverability uncertainty (bar to bar variation of #Average)}
+  value1 = smooth_constant * ((High+Low)/2 - (High[1]+Low[1])/2)
+          + smooth_constant1 * value1_old;
+  value1_old = value1;
+  { EMA of Measurement uncertainty (high-low Range)}
+  value2 = smooth_constant * ((High - Low) / 2.0)
+          + smooth_constant1 * value2_old;
+  value2_old = value2;
+  { Tracking Index }
+  if value2 <> 0 then lambda = AbsValue(value1 / value2);
+  { alpha for alpha filter }
+  alpha = ( -lambda * lambda + Squareroot(lambda*lambda*lambda*lambda+ 16*lambda*lambda)) / 8.0;
+  value3 = alpha * (High+Low)/2 + (1.0 - alpha) * value3_old;
+  value3_old = value3;
+
+  OptimalTrackingP = value3;

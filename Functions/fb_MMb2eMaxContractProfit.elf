@@ -1,0 +1,18 @@
+vars: mcp(0);
+
+if marketposition <> 0 then begin
+
+ if barssinceentry = 0 then begin
+ 
+  if marketposition = 1 then mcp = h - entryprice
+  else mcp = entryprice - l;
+  
+ end else begin
+ 
+  if marketposition = 1 then mcp = maxlist(mcp,h-entryprice)
+  else mcp = maxlist(mcp,entryprice-l);
+  
+ end;
+end else mcp = 0;
+
+MM.MaxContractProfit = mcp;

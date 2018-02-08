@@ -1,0 +1,4 @@
+Input: _strSymbol(StringSimple), _strAccount(StringSimple);
+
+RaiseRuntimeError("GetPositionMarketValue function is currently not implemented");
+GetPositionMarketValue = 0;

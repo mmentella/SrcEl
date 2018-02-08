@@ -1,0 +1,49 @@
+inputs:
+	ResNum(NumericSimple),
+	SessNum(NumericSimple),
+	_Date(NumericSimple),
+	_Time(NumericSimple),
+	StepMin(NumericSimple),
+	ModeStep(NumericSimple),
+	TPOStep(NumericRef);
+
+//StepTPO(StartTime,CurTime,StepMin,ModeStep,TPOStep);
+Variables: 	intrabarpersist NumStep(0),
+		intrabarpersist SavNumStep(0),
+		intrabarpersist Res(false);
+
+var: dw(0), ct(0), st(0), steps_from_start(0);
+
+dw = dayofweek(_Date);
+
+ct = TimeToMinutes(_Time);
+st = sessionstarttime(0, SessNum);
+st = TimeToMinutes(st);
+
+
+if CurrSess(ResNum, SessNum) then begin
+	if sessionstartday(0, SessNum) = sessionendday(0, SessNum) then begin
+		NumStep = IntPortion((ct - st)/StepMin)+1;	
+	end else begin
+		if dw = sessionendday(0, SessNum) then begin
+			NumStep = IntPortion((ct+1440 - st)/StepMin)+1;	
+		end;
+	end;
+	
+end;
+
+
+
+          Res = false;
+          if NumStep <> SavNumStep then begin
+             if ModeStep=0 then begin 
+                TPOStep = TPOStep+1;
+             end else begin
+                TPOStep = NumStep; 
+             end;
+             Res = true;
+             SavNumStep = NumStep;
+          end;   
+
+
+          StepTPO_N = Res;

@@ -1,0 +1,45 @@
+
+Inputs: Price(NumericSeries), AvgFactor(NumericSimple), DSlenMin(NumericSimple){, DSlenMax(NumericSimple)};
+
+Vars: trendLen(0), dsVal(0), lastMin(0){, lastMax(0)}{, dsDelta(0), dsMul(0)};
+
+if DSlenMin <> lastMin {or DSlenMax <> lastMax} then begin
+	if CurrentBar <= 1 then
+		trendLen = DSlenMin;
+	if trendLen < DSlenMin then
+		trendLen = DSlenMin;
+	lastMin = DSlenMin;
+	{lastMax = DSlenMax;}
+	{dsMul = (DSlenMax - DSlenMin) / 100;}
+end;
+
+dsVal = Round(gdDSX(Price, DSlenMin, AvgFactor), 0);
+{dsDelta = dsVal - dsVal[1];}
+
+if dsVal[1] > 0 then begin
+	if dsVal < 0 then
+		trendLen = DSlenMin
+	else
+		{trendLen = MinList(DSlenMax, MaxList(DSlenMin, trendLen[1] + dsMul * dsDelta));}
+		if dsVal > dsVal[1] then
+			trendLen = trendLen + 1
+		else
+			if dsVal < dsVal[1] and trendLen > DSlenMin then
+					trendLen = trendLen - 1;
+end
+else
+if dsVal[1] < 0 then begin
+	if dsVal > 0 then
+		trendLen = DSlenMin
+	else
+		{trendLen = MinList(DSlenMax, MaxList(DSlenMin, trendLen[1] - dsMul * dsDelta));}
+		if dsVal < dsVal[1] then
+			trendLen = trendLen + 1
+		else
+			if dsVal > dsVal[1] and trendLen > DSlenMin then
+					trendLen = trendLen - 1;
+end
+else
+	trendLen = DSlenMin;
+
+gdDSlen	= trendLen;

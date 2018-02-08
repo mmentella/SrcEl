@@ -1,0 +1,11 @@
+Inputs: Rtime(NumericSimple);
+  
+Variables: intrabarpersist STime(0),intrabarpersist Res(false); 
+  
+  Res = false;
+  if STime <> Rtime then begin
+     Res = true;
+     STime = Rtime; 
+  end;
+  
+  NRTime = Res;

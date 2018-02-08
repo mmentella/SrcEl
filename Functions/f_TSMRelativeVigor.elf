@@ -1,0 +1,24 @@
+[LegacyColorValue = TRUE];
+
+{ TSMRelativeVigor
+  From John F. Ehlers, "Cybernetic Analysis for Stocks and Futures" (Wiley, 2004)
+  Copyright 2004, P.J.Kaufman. All rights reserved. }
+
+	inputs:	length(numericsimple);
+	vars:		num(0), denom(0), count(0), RVI(0), trigger(0), v1(0), v2(0);
+
+	v1 = ((close - open) + 2*(close[1] - open[1]) + 2*(close[2] - open[2])
+			+ (close[3] - open[2])) / 6;
+	v2 = ((high - low) + 2*(high[1] - low[1]) + 2*(high[2] - low[2])
+			+ (high[3] - low[3])) / 6;
+
+	num = 0;
+	denom = 0;
+	for count = 0 to length - 1 begin
+		num = num + v1[count];
+		denom = denom + v2[count];
+		end;
+	if denom <> 0 then RVI = num / denom;
+	trigger = RVI[1];
+
+	TSMRelativeVigor = RVI;

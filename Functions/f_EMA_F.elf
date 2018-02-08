@@ -1,0 +1,66 @@
+[LegacyColorValue = TRUE];
+
+{****************************************************************************************
+EMA_F - Function del System Mangusta 2002
+Codice Easy Language di Enrico Malverti
+*****************************************************************************************}
+
+Vars: AdJ(0), Brake(0), Count(0), Flow(0), Grade(0), Jump(0), I_1(0), I_2(0), 
+      Mid_1(0), Mid_2(0), MisT(0), Nick(0), Order(0), Perc(0), Seep(0), Tot_1(0), Tot_2(0);
+
+Inputs: Price(NumericSeries), Unif(Numeric);   
+
+Array: Remind[600](0);
+
+{Inizializzazione dei parametri}
+If @CurrentBar = 1 Then Begin   
+  Flow = MinList(300, MaxList(1, Unif));
+  AdJ = MaxList(30, Floor(2*Flow));
+  Mid_1 = (AdJ + 1)*0.5;
+  Mid_2 = (AdJ - 1)*0.5;
+  Tot_1 = 0;
+  Tot_2 = 0;
+  Nick = AdJ*(AdJ + 1)*(AdJ - 1)/12;
+  Brake = 1.2 + (1/Flow);
+
+  For Count = AdJ - 1 Downto 0 Begin
+    Tot_1 = Tot_1 + Price[Count];
+    Tot_2 = Tot_2 + Price[Count]*(Mid_2 - Count);
+   End;
+
+  I_2 = Tot_2/Nick;
+  I_1 = Tot_1/AdJ - I_2 * Mid_1;
+  MisT = 0;
+
+  For Count = AdJ - 1 Downto 0 Begin
+    I_1 = I_1 + I_2;
+    Remind[Count] = @absvalue(Price[Count] - I_1);
+    MisT = MisT + Remind[Count];
+   End;
+
+  Order = 0;
+  Jump = MisT/AdJ;
+  Seep = Price[0];
+  Perc = 100000;
+  Grade = (Price[0] - Price[Floor(Flow)])/Floor(Flow);
+End  
+
+  Else Begin 
+  	Tot_2 = Tot_2 - Tot_1 + Price[AdJ] * Mid_1 + Price[0] * Mid_2;
+	Tot_1 = Tot_1 - Price[AdJ] + Price[0];
+	If Order <= 0 Then Order = AdJ;
+	Order = Order - 1;
+    MisT = MisT - Remind[Order];
+    I_2 = Tot_2/Nick;
+    I_1 = Tot_1/AdJ + I_2 * Mid_2;
+    Remind[Order] = @absvalue(Price[0] - I_1);
+    MisT = MaxList(0.001,(MisT + Remind[Order]));
+    Jump = Jump + (MisT/AdJ - Jump)/AdJ;
+    Grade = Grade/Brake;
+    Perc = 1 + @absvalue(Price[0] - Seep - Grade/Perc)/Jump/Flow;
+    Grade = (Grade/Perc + (Perc - 1)*(Price[0] - Seep))/Perc;
+    Seep = Seep + Grade ;
+  End;  
+
+EMA_F = (Seep);
+

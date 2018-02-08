@@ -1,0 +1,62 @@
+[LegacyColorValue = TRUE];
+
+{      PassWord
+Type : User Function (String)
+Name : vrt.HHMM.pm
+Notes: Returns the Time in hh:mm am/pm format.
+
+Modified 10/06/1999 to correct AM/PM at noon...
+
+EasyLanguage interpretation provided
+  by Samuel K. Tennis
+  of Vista-Research (c) 1997, 1998, 1999, 2000, 2001, 2002
+
+Any unauthorized use of this material may constitute
+  a violation of U.S. and International Copyright Laws.
+}
+
+Inputs: xTime (NumericSimple) ;
+
+Vars  : hh     (00),        mm     (00),
+        st.hh  (""),        st.mm  (""),
+        AMPM   (""),        Return ("") ;
+{
+hh       = Round {IntPortion}              (xTime * 0.01, 0) ;
+}
+hh       =                       @IntPortion (xTime * 0.01) ;
+mm       = @Round {IntPortion} (@FracPortion (xTime * 0.01) * 100.0, 00) ;
+
+AMPM     = "am" ;
+
+if  hh >= 12  then  AMPM = "pm" ;
+if  hh  > 12  then  hh   = hh - 12 ;
+
+{*
+if hh  > 12 then begin
+  hh   = hh - 12 ;
+  AMPM = "pm" ;
+end ;
+ *}
+
+st.hh    = @NumToStr (hh, 0) ;
+st.mm    = @NumToStr (mm, 0) ;
+
+if  (@StrLen (st.hh) <  02)  then  st.hh  = "0" + st.hh ;
+if  (@StrLen (st.mm) <  02)  then  st.mm  = "0" + st.mm ;
+
+Return   = st.hh + ":" + st.mm + AMPM ;
+
+vrt.HHMM.pm = Return ;
+
+{
+Custom Programming Services provided by:
+
+                 Samuel K. Tennis
+                  Vista-Research
+               129 Staff Drive, NE
+         Ft. Walton Beach, Florida  32548
+          voice :  1(850) 243-5105
+          fax   :  1(850) 301-2884
+          eMail :  skt@vista-research.com
+            http://www.vista-research.com
+}

@@ -1,0 +1,9 @@
+Inputs: entry_price(NumericSimple), PortfolioLossPerContract(NumericSimple);
+
+if 0 > PortfolioLossPerContract then
+	pmms_calc_money_cost_for_entry_per_cntrct = entry_price * bigpointvalue * (-1 * PortfolioLossPerContract / 100)
+else
+	pmms_calc_money_cost_for_entry_per_cntrct = PortfolioLossPerContract;
+
+if 0 > pmms_calc_money_cost_for_entry_per_cntrct then
+	raiseruntimeerror("pmms_calc_money_cost_for_entry_per_cntrct error. value must been >= 0!");

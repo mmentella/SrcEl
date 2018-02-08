@@ -1,0 +1,53 @@
+[LegacyColorValue = TRUE];
+
+Inputs: Len(Numeric), Trig(Numeric);
+
+Vars: ET(0), Price(0), Osc(0), Wave(0), HiOsc(-999), HiOsc2(-999), HiPrice(-999), HiPrice2(-999);
+
+Osc = ElliottWaveOsc;
+
+Price = (High + Low) / 2;
+
+ET = ElliottTrend(Len, Trig);
+
+IF ET = 1 AND ET[1] = -1 AND Osc > 0 Then Begin
+	HiOsc = Osc;
+	HiPrice = Price;
+	Wave = 3;
+End;
+
+IF Wave = 3 AND HiOsc < Osc Then
+	HiOsc = Osc;
+
+IF Wave = 3 AND Osc <= 0 AND ET = 1 Then 
+	Wave = 4;
+
+IF Wave = 4 AND Price = Highest(Price, 5) AND Osc >= 0 Then Begin
+	Wave = 5;
+	HiOsc2 = Osc;
+	HiPrice2 = Price;
+End;
+
+IF Wave = 5 AND HiOsc2 < Osc Then 
+	HiOsc2 = Osc;
+
+If Wave = 5 AND HiPrice2 < Price Then
+	HiPrice2 = Price;
+
+IF HiOsc2 > HiOsc AND Wave = 5 AND ET = 1 Then Begin
+	Wave = 3;
+	HiOsc = HiOsc2;
+	HiPrice = HiPrice2;
+	HiOsc2 = -999;
+	HiPrice2 = -999;
+End;
+
+IF ET = -1 AND Wave = 5 Then Begin
+	Wave = -3;
+	HiOsc = -999;
+	HiPrice = -999;
+	HiOsc2 = -999;
+	HiPrice2 = -999;
+End;
+
+Wave345Elliott = Wave;

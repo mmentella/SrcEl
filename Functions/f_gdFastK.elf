@@ -1,0 +1,20 @@
+
+Inputs:
+	PriceValueH(NumericSimple),  
+	PriceValueL(NumericSimple), 
+	PriceValueC(NumericSimple), 
+	StochLen(NumericSimple),
+	PriceRange(NumericRef) ;
+
+Variables: 
+	priceLow(0),
+	priceHigh(0),
+	priceDelta(0);
+
+priceLow = Lowest(PriceValueL, StochLen);
+PriceRange = Highest(PriceValueH, StochLen) - priceLow;
+
+if PriceRange > 0 then
+	gdFastK = (PriceValueC - priceLow) / PriceRange * 100
+else 
+	gdFastK = 0;

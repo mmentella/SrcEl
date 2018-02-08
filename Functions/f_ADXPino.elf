@@ -1,0 +1,18 @@
+Inputs: Length(NumericSimple);
+Variables: Counter(0), CummDMI(0), Return(0);
+
+Return = 0;
+
+If CurrentBar >= 1 AND Length > 0 Then Begin
+	If CurrentBar < Length Then begin
+		CummDMI = 0;
+		for Counter = 0 To CurrentBar - 1 Begin
+			CummDMI = CummDMI + DMI(Length)[Counter];
+		End;
+		Return = CummDMI / CurrentBar;
+	End
+	Else 
+		Return = (ADXPino[1] * (Length - 1) + DMI(Length)) / Length;
+End;
+
+ADXPino = Return;

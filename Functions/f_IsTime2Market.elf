@@ -1,0 +1,31 @@
+//
+// IsTime2Market() EasyLanguage function
+//
+// BackTest: check if bar time is inside Market opening hours or the bar is not the lastone of the day;
+// RealTime: check if bar time and current time are inside Market opening hours.
+//
+// Author: Giulio D'Urso
+// Year: 2010
+// Update: 18 Apr 2011
+//
+
+Inputs: OpenTime(NumericSimple), CloseTime(NumericSimple), BreakStart(NumericSimple), BreakStop(NumericSimple);
+
+Variables: TimeMargin(BarInterval * 0.5);
+
+IsTime2Market = true;
+
+if Time < OpenTime or Time >= CloseTime then IsTime2Market = false
+
+else
+if BreakStart > OpenTime and BreakStart <= Time and Time < BreakStop then IsTime2Market = false
+
+else
+if Date < CurrentDate then begin
+	if SessionLastBar then IsTime2Market = false; end
+
+else
+	if Time >= LastCalcTime then
+		if CurrentTime < (OpenTime + TimeMargin) or CurrentTime >= (CloseTime - TimeMargin) then IsTime2Market = false
+		else
+		if BreakStart > OpenTime and CurrentTime >= (BreakStart - TimeMargin) and CurrentTime < (BreakStop + TimeMargin) then IsTime2Market = false;

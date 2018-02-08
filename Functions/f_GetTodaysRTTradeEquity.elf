@@ -1,0 +1,4 @@
+Input: _strAccount(StringSimple);
+
+RaiseRuntimeError("GetTodaysRTTradeEquity function is currently not implemented");
+GetTodaysRTTradeEquity= 0;

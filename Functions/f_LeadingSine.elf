@@ -1,0 +1,55 @@
+Inputs: Price(NumericSeries),_oSine(NumericRef),_oLeadSine(NumericRef),_oDCPeriod(NumericRef);
+
+Vars: smooth(0),detrender(0),i1(0),q1(0),ji(0),jq(0),i2(0),q2(0),re(0),im(0),period(0),smoothperiod(0),
+      smoothprice(0),dcperiod(0),realpart(0),imagpart(0),count(0),dcphase(0);
+
+if currentbar > 5 then begin
+ 
+ smooth = (4*price + 3*price[1] + 2*price[2] + price[3])/10;
+ detrender = HilbertTransform(smooth,period);
+ 
+ q1 = HilbertTransform(detrender,period);
+ i1 = detrender[3];
+ 
+ ji = HilbertTransform(i1,period);
+ jq = HilbertTransform(q1,period);
+ 
+ i2 = i1 - jq;
+ q2 = q1 + ji;
+ 
+ i2 = .2*i2 + .8*i2[1];
+ q2 = .2*q2 + .8*q2[1];
+ 
+ re = i2*i2[1] + q2*q2[1];
+ im = i2*q2[1] - q2*i2[1];
+ re = .2*re + .8*re[1];
+ im = .2*im + .8*im[1];
+ if im <> 0 and re <> 0 then period = 360/arctangent(im/re);
+ if period > 1.5*period[1] then period = 1.5*period[1];
+ if period < .67*period[1] then period = .67*period[1];
+ if period < 6 then period = 6;
+ if period > 50 then period = 50;
+ period = .2*period + .8*period[1]; 
+ smoothperiod = .33*period + .67*smoothperiod[1];
+ 
+ smoothprice = (4*price + 3*price[1] + 2*price[2] + price[3])/10;
+ dcperiod = IntPortion(smoothperiod + .5);
+ realpart = 0;
+ imagpart = 0;
+ for count = 0 to dcperiod - 1 begin
+  realpart = realpart + cosine(360*count/dcperiod)*(smoothprice[count]);
+  imagpart = imagpart + sine(360*count/dcperiod)*(smoothprice[count]);
+ end;
+ if absvalue(realpart) > .001 then dcphase = arctangent(imagpart/realpart);
+ if absvalue(realpart) < .001 then dcphase = 90*Sign(imagpart);
+ dcphase = dcphase + 90;
+ dcphase = dcphase + 360/smoothperiod;
+ 
+ if imagpart < 0 then dcphase = dcphase + 180;
+ if dcphase > 315 then dcphase = dcphase - 360;
+ 
+ _oSine = sine(dcphase);
+ _oLeadSine = sine(dcphase + 45);
+ _oDCPeriod = dcperiod;
+ 
+end;

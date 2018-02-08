@@ -1,0 +1,48 @@
+[LegacyColorValue = TRUE];
+
+{Mode: The largest value in a distribution
+  Copyright 1998-2004, PJ Kaufman. All rights reserved
+  In order to find the mode, a frequency distribution must first be created }
+
+{ NOTE: Because it is calculation-intensive, this program may take some time to bring
+ the values on the screen. You may want to plot a short interval (of six months) with
+ a median length less than 50 to see how long it takes to finish the calculations. }
+
+{ price = input series
+  length = number of past items to be included in the distribution
+  ncells = the number of cells in the frequency distribution (default and maximum = 20) }
+
+	inputs: price(numericseries), length(numericsimple), ncells(numericsimple);
+	vars:	n(0), k(0),  ix(0), iy(0), save(0), top(0), bot(0), size(0), bound(0),
+			max(0), m(0);
+	array: cells[20](0), scale[20](0);
+
+	n = length;
+	if currentbar > length then n = @currentbar;
+	k = ncells;
+	if k > 20 then k = 20;
+{ find range of prices over data series }
+	top = highest(price,n);
+	bot = lowest(price,n);
+	size = (top - bot) / (k - 1);
+	bound = bot;
+	for ix = 1 to k begin
+		bound = bound + size;
+		scale[ix] = bound;
+		end;
+{ scan data, enter frequency }
+	for iy = 0 to n - 1 begin
+		for ix = 1 to k begin
+			if price[iy] <= scale[ix] and (ix = 1 or price[iy] > scale[ix-1]) then cells[ix] = cells[ix] + 1;
+			end;
+		end;
+{ find mode }
+	max = 0;
+	m = 0;
+	for ix = 1 to k begin
+		if cells[ix] > max then begin
+			max = cells[ix];
+			m  = ix;
+			end;
+		end;
+	TSMMode = scale[m];

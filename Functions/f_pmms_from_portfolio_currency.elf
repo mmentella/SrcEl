@@ -1,0 +1,2 @@
+Input: Money(NumericSimple);
+pmms_from_portfolio_currency = convert_currency( datetime, portfolio_CurrencyCode, SymbolCurrencyCode, Money );

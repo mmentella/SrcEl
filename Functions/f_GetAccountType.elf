@@ -1,0 +1,18 @@
+Input: _strAccountID(StringSimple);
+
+// Account types returned by TS (Easylanguage) are specifically for TS
+// If the specified account exists - This function returns 1, 0 (atInvalid) - otherwise
+
+begin
+
+Alert("This function's implementation is different from EasyLanguage's");
+GetAccountType = 0; // = atInvalid
+
+for value1 = 1 to tm_accounts_count begin
+	if 	_strAccountID =  tm_account_str_value(value1, 2000) then begin
+		GetAccountType = 1;
+		break;
+	end;
+end; 
+
+end

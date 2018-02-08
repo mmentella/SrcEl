@@ -1,0 +1,8 @@
+[LegacyColorValue = true]; 
+
+Variables: HTODAY(0);
+
+HTODAY = HTODAY[1] ;
+IF DATE > DATE[1] THEN HTODAY = 0 ;
+IF HIGH > HTODAY THEN HTODAY = HIGH ;
+PINO_IDHIGH = HTODAY ;

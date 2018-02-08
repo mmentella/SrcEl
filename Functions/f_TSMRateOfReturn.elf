@@ -1,0 +1,10 @@
+[LegacyColorValue = TRUE];
+
+{ TSMRateOfReturn : One-period rate of return, or holding period rate of return
+  Copyright 1998-2004, PJ Kaufman. All rights reserved }
+
+	inputs: begeqty(numeric), endeqty(numeric);
+
+	TSMRateOfReturn = 0;
+	if begeqty <> 0 then
+		TSMRateOfReturn = (endeqty - begeqty) / begeqty;

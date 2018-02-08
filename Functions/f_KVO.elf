@@ -1,0 +1,11 @@
+[LegacyColorValue = true]; 
+
+{*******************************************
+Function - KVO
+*******************************************}
+
+Inputs: FastX(Numeric), SlowX(Numeric); 
+Vars: FXAvg(0), SXAvg(0);
+FXAvg = XAverage(VForce, FastX);
+SXAvg = XAverage(VForce, SlowX);
+KVO = FXAvg - SXAvg;

@@ -1,0 +1,12 @@
+Inputs: Price(NumericSeries),Periods(NumericSimple);
+
+Vars: ADXVal(0),_ADX(0),SC(0);
+
+ADXVal = ADX(Periods);
+
+_ADX = ADXVal/100;
+
+SC = 2/(Periods+1);
+
+if currentbar < periods then VIDYADX = Price
+else VIDYADX = ((SC*_ADX*Price)+(1-SC*_ADX)*VIDYADX[1]);

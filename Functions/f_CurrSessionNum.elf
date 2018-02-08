@@ -1,0 +1,16 @@
+input: ResNum(NumericSimple);
+
+var: intrabarpersist sessN(1);
+var: intrabarpersist sessC(0);
+
+sessC = sessioncount(0);
+
+for sessN = 1 to sessC begin
+	if CurrSess(ResNum, sessN) then begin
+		CurrSessionNum = sessN;
+		#return;
+	end;
+end;
+
+CurrSessionNum = 0;
+

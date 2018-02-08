@@ -1,0 +1,16 @@
+{*******************************************************************
+Description: Directional Movement Index
+Provided By: Giulio D'Urso (c) Copyright 2009
+********************************************************************}
+
+Inputs: Length(NumericSimple);
+Variables: DMIP(0), DMIM(0);
+
+DMIP = gdDMIplus(Length);
+DMIM = gdDMIminus(Length);
+
+If DMIP + DMIM = 0 Then 
+	gdDMI = 0
+Else
+	{gdDMI = 100 * AbsValue(DMIP - DMIM) / (DMIP + DMIM);}
+	gdDMI = 100 * (DMIP - DMIM) / (DMIP + DMIM);

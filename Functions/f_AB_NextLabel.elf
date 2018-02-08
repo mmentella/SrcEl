@@ -1,0 +1,39 @@
+inputs: 
+	MinuteInterval( numericsimple ) ;
+
+variables: 
+	var0( 0 ), 
+	var1( 0 ), 
+	var2( 0 ), 
+	var3( 0 ), 
+	var4( "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789" ) ;
+
+condition1 = BarType = 1                                 
+ and MinuteInterval >= BarInterval                     
+ and ( MinuteInterval <= BarInterval of Data1 or BarType of Data1 = 2 ) ;
+if condition1 then 
+	begin
+
+	var1 = MinutesIntoWeek( DayOfWeek( Date ), Time ) ;
+	var0 = BarStatus( 1 ) ;
+	condition1 = ( CurrentBar of Data1 = 1 and var0 = 2 ) or var0[1] = 2 ;
+	if condition1 then                  
+		begin
+		var3 = 1 ;
+		var2 = var1 - BarInterval ;
+		end ;
+
+	condition1 = var1 > var2 + MinuteInterval ;
+	if condition1 then 
+		begin
+		var3 = var3 + 1 ;
+		if var3 > 35 then
+			var3 = 1 ;
+		var2 = var1 - BarInterval ; 
+		end ;
+
+	AB_NextLabel = MidStr( var4, var3, 1 ) ;
+
+	end
+else
+	AB_NextLabel = "" ;

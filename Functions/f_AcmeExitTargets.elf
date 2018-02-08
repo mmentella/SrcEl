@@ -1,0 +1,62 @@
+[LegacyColorValue = TRUE];
+
+Inputs: 
+systemid(string),
+stoploss(numeric),
+ProfitTarget1(numeric),
+ProfitTarget2(numeric);
+
+variables:
+plotcolor(black),
+slline(-1),
+pt1line(-1),
+pt2line(-1),
+slstring(""),
+sltext(-1),
+pt1string(""),
+pt1text(-1),
+pt2string(""),
+pt2text(-1);
+
+AcmeExitTargets = false;
+
+if lastbaronchart then begin
+if marketposition = 1 then begin
+slstring = "St" + systemid + "L";
+pt1string = "Tgt" + systemid + "L";
+pt2string = "Tr" + systemid + "L";
+end;
+if marketposition = -1 then begin
+slstring = "St" + systemid + "S";
+pt1string = "Tgt" + systemid + "S";
+pt2string = "Tr" + systemid + "S";
+end;
+if getbackgroundcolor = 1 then
+plotcolor = white;
+slline = tl_new(date[0], time[0], stoploss,
+date[1], time[1], stoploss);
+if slline >= 0 then begin
+tl_setcolor(slline, plotcolor);
+tl_setsize(slline, 1);
+tl_setextright(slline, true);
+sltext = text_new(date, time, stoploss, slstring);
+text_setcolor(sltext, plotcolor);
+end;
+pt1line = tl_new(date[0], time[0], profittarget1,date[1], time[1], profittarget1[1]);
+if pt1line >= 0 then begin
+tl_setcolor(pt1line, plotcolor);
+tl_setsize(pt1line,1);
+tl_setextright(pt1line, true);
+pt1text = text_new(date, time, profittarget1, pt1string);
+end;
+pt2line = tl_new(date[0], time[0], profittarget2,date[1], time[1], profittarget2);
+if pt2line >=0 then begin
+tl_setcolor(pt2line, plotcolor);
+tl_setsize(pt2line, 1);
+tl_setextright(pt2line, true);
+pt2text = text_new(date, time, profittarget2, pt2string);
+text_setcolor(pt2text, plotcolor);
+end;
+end;
+
+AcmeExitTargets = true;

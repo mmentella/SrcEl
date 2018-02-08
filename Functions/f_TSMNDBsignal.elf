@@ -1,0 +1,25 @@
+[LegacyColorValue = TRUE];
+
+{ TSMNDBsignal : N-Day Breakout signal function
+  Copyright 1994-2004, P.J.Kaufman.  All rights reserved. }
+
+{ phigh = input series high price
+  plow = input series low price
+  pclose = input series closing price
+  period = length of calculation }
+
+{ rules for N-day Breakout System signal rules:
+  BUY when high is above N-day high and close > prior close
+  SELL when low is below N-day low and close < prior close   }
+
+  input: phigh(numericseries), plow(numericseries), pclose(numericseries),
+         period(numericsimple);
+  vars:  nhigh(0), nlow(0), signal(0);
+
+  nhigh = highest(phigh,period)[1];
+  nlow  = lowest(plow,period)[1];
+{ Buy and sell signals }
+  signal = signal[1];
+  if phigh > nhigh and pclose > pclose[1] then signal = 1;
+  if plow < nlow and pclose < pclose[1]  then signal = -1;
+  TSMNDBsignal = signal;

@@ -1,0 +1,7 @@
+vars: start(0),now(0);
+
+if d <> d[1] then start = now;
+
+now = i_OpenEquity;
+
+MM.DailyRunup = now - start;

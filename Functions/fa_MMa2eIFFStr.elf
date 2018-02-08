@@ -1,0 +1,6 @@
+inputs: Test( truefalsesimple ), TrueVal( StringSimple ), FalseVal( StringSimple ) ;
+
+if Test then
+	MM.IFFStr = TrueVal 
+else 
+	MM.IFFStr = FalseVal ;

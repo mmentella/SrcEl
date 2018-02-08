@@ -1,0 +1,16 @@
+[LegacyColorValue = TRUE];
+
+{*******************************************************************
+Description	: HiLo Limit Indicator by Dr. Koch 
+Provided By	: Matteo Zucchini
+********************************************************************}
+Inputs: Lookback(NumericSimple), Level(NumericSimple);
+Variables: Counter(0), ls(0), ds(0), HiLo(0); 
+
+For counter = 0 To Lookback - 1 Begin
+   ls = LowestFC(low, Lookback);
+   ds = HiLoRange(Lookback);	
+   HiLo = ls + (ds * (Level/100));	
+End;
+
+HiLoLimit = HiLo;

@@ -1,0 +1,60 @@
+// TF_TextLocale
+// Copyright 2010 Horowitz Technology Partners, LLC
+
+[SameTickOpt=True] {See Textplay Indicator for explanation of this}
+ 
+// Call = TextLocale(TextID,Placement,TextColor,Pcnt);
+
+Inputs:
+	TextID	  ( numericsimple ),
+	Placement ( numericsimple ), {Clockface with left hand upper corner being 1, 2, 3 and 4}
+	TextColor ( Numericsimple ),
+	Pcnt	  ( numericsimple );	
+	
+Var: ValidTextID( false ),
+	Left_ID(0),
+	Right_ID(0),
+	High_ID(0),
+	Low_ID(0),
+	Offset(0)
+	;
+
+If TF_LastBarOnChart Then Begin
+	Left_ID  = GetAppInfo( aiLeftDispDateTime  );       
+	Right_ID = GetAppInfo( aiRightDispDateTime );     
+	High_ID  = GetAppInfo( aiHighestDispValue  );       
+	Low_ID   = GetAppInfo( aiLowestDispValue   ); 
+	Offset = (high_ID - Low_ID)*.03; {This works on my text/chart but you might need to experiment}
+
+	ValidTextID = TF_Text_Exist( TextID ) ;
+	If ValidTextID Then Begin
+		If (Placement = 4) Then Begin // South West
+			Text_SetLocation( textid,JulianToDate( IntPortion(Left_ID )), MinutesToTime( FracPortion(Left_ID)*60*24 ),Low_ID + (pcnt * offset)) ;
+			Text_SetStyle( TextID, 0,1 ) ; 
+		End;
+
+		If (Placement = 3) Then Begin //  South East}
+			Text_SetLocation( textid,JulianToDate( IntPortion(Right_ID)), MinutesToTime( FracPortion(Right_ID)*60*24 ),Low_ID	+ (Offset * pcnt)) ;
+			Text_SetStyle( TextID, 1,1 ) ; 
+		End;
+
+		If (Placement =  2) Then Begin  // North East
+			Text_SetLocation( textid,JulianToDate( IntPortion(Right_ID)), MinutesToTime( FracPortion(Right_ID)*60*24 ),High_ID - (Offset * pcnt)) ;
+			Text_SetStyle( TextID, 1,0 ) ; 
+		End;
+
+		If (Placement = 1) Then Begin // North West
+			Text_SetLocation( textid,JulianToDate( IntPortion(Left_ID)), 	MinutesToTime( FracPortion(Left_ID)*60*24 ),High_ID	- (Offset * pcnt)	) ;
+			Text_SetStyle( TextID, 0,0 ) ; 
+		End ;
+
+		Text_SetColor (TextID , TextColor);
+
+	End 
+	Else 
+		RaiseRunTimeError( "TextID does not exist." ) ;
+End ;
+
+TF_TextLocale = 1 ;
+
+// ** Copyright (c) 2010 Horowitz Technology Partners, LLC All rights reserved. ** 

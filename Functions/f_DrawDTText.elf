@@ -1,0 +1,28 @@
+Inputs: 
+     SymText(StringSimple), 
+     SDate(NumericSimple),
+     STime(NumericSimple),
+     SymPrice(NumericSimple), 
+     SymColor(NumericSimple),
+     BgColor(NumericSimple),
+     SymSize(NumericSimple),        // 8
+     SymFont(StringSimple),         // "Wingdings 3" 
+     AlignHoriz(NumericSimple),     // -1
+     AlignVert(NumericSimple),      // 0
+     Border(TrueFalseSimple);
+
+//DrawDTText(SymText,SDate,STime,SymPrice,SymColor,BgColor,SymSize,SymFont,AlignHoriz,AlignVert);
+
+   value1 = Text_New (SDate,STime,SymPrice,SymText); 
+   if SymColor > 0 then begin text_setcolor(value1,SymColor); end;
+   //if AlignHoriz > -1 or AlignVert > -1 then begin 
+   text_setstyle(value1,AlignHoriz,AlignVert); 
+   //end;
+   if SymFont <> "" then begin text_setfontname(value1,SymFont); end;
+   if SymSize > 0 then begin text_setsize(value1,SymSize); end;
+   if(BgColor > -1) then begin text_setbgcolor(value1,BgColor); end;
+   if Border then begin text_setborder(value1,Border); end;
+
+    
+
+DrawDTText = value1;

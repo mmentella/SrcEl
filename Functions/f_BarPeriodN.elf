@@ -1,0 +1,38 @@
+Inputs: ResNum(NumericSimple), SessNum(NumericRef),DateBar(NumericRef),TimeBar(NumericRef),OpenBar(NumericRef),MaxBar(NumericRef),MinBar(NumericRef),CloseBar(NumericRef);
+
+//BarPeriodN(sessionstarttime(0,4),BDate,BTime,BOpen,BHigh,BLow,BClose);           
+Variables: 
+           intrabarpersist SOpen(0),
+           intrabarpersist SMinBar(0),
+           intrabarpersist SMaxBar(0),
+           intrabarpersist SCloseBar(0),
+           intrabarpersist SDateBar(0),
+	    intrabarpersist STimeBar(0);           
+
+	if CurrSess(ResNum,SessNum) then begin
+		SMaxBar = maxlist(SMaxBar,High data(ResNum));   
+           	SMinBar = minlist(SMinBar,Low data(ResNum));   
+           	SCloseBar = Close data(ResNum);
+           	SDateBar = Date data(ResNum);
+           	STimeBar = Time data(ResNum);
+           	BarPeriodN = false;
+		#return;
+	end;
+	
+	if NewSessN(ResNum,SessNum) then begin
+		DateBar= SDateBar;
+              TimeBar= STimeBar;  
+              OpenBar= SOpen; 
+              MaxBar = SMaxBar;   
+              MinBar = SMinBar;
+              CloseBar = SCloseBar;
+              
+              SOpen = Open data(ResNum);
+              SMinBar =9999;
+              SMaxBar = 0;
+
+		BarPeriodN = true;
+		#return;
+	end;
+	
+	BarPeriodN = false;

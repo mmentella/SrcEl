@@ -1,0 +1,18 @@
+Input: _strAccountID(StringSimple);
+
+// Account statuses returned by TS (Easylanguage) are specifically for TS
+// This function assumes that if the specified account exists - it's active
+
+begin
+
+Alert("This function's implementation is different from EasyLanguage's");
+GetAccountStatus = 0; // = asInvalid
+
+for value1 = 1 to tm_accounts_count begin
+	if 	_strAccountID = tm_account_str_value(value1, 2000) then begin
+		GetAccountStatus = 1; // = asActive
+		break;
+	end;
+end; 
+
+end

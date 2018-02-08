@@ -1,0 +1,19 @@
+[LegacyColorValue = true]; 
+
+{_SMA: Simple Moving Average}   
+
+Inputs: Price(NumericSeries),Length(NumericSimple);
+
+Vars:   _$Sum(0),_$Cnt(0);
+
+{Simple Moving Average}
+_$Sum=0;
+For _$Cnt=0 to Length-1 begin
+    _$Sum=_$Sum+Price[_$Cnt];
+End;
+
+{RetVal}
+If Length>0 then 
+   _SMA=_$Sum/Length
+Else
+   _SMA=0;

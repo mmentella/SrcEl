@@ -1,0 +1,28 @@
+
+inputs:
+	KeyArray[MaxSize1](NumericArrayRef),
+	ValueArray[MaxSize2](NumericArrayRef),
+
+	Key(NumericSimple),
+	Value(NumericSimple),
+	
+	defaultKey(NumericSimple);
+
+variables: idx(0);
+
+
+for idx = 0 to MaxSize1 begin
+	if KeyArray[idx] = defaultKey then begin
+		KeyArray[idx] = Key;
+		ValueArray[idx] = Value;
+		break;
+	end;
+
+	if (Value < ValueArray[idx]) then begin
+		emulate_dictionary__move_right(KeyArray, ValueArray, idx);
+		KeyArray[idx] = Key;
+		ValueArray[idx] = Value;
+		break;
+	end;
+end;
+

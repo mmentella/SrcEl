@@ -1,0 +1,56 @@
+{*******************************************************************
+Description: Directional Movement Index Plus
+Provided By: Giulio D'Urso (c) Copyright 2009
+********************************************************************}
+
+Inputs: PriceHigh(NumericSeries), PriceLow(NumericSeries), PriceClose(NumericSeries), Length(NumericSimple);                                             
+
+Variables: Counter(0), TRange(0), MyRange(0), PlusDM14(0), PlusDM(0), MinusDM(0);
+
+If CurrentBar = 1 Or Length <> MyRange Then Begin
+	MyRange = Length;
+	gdDMIplusCustom = 0;
+	PlusDM14 = 0;
+	TRange = 0;
+	For Counter = 0 To MyRange - 1 Begin
+		If PriceHigh[Counter] - PriceHigh[Counter+1] < 0 Then 
+			PlusDM = 0 
+		Else 
+			PlusDM = PriceHigh[Counter] - PriceHigh[Counter+1];
+		If PriceLow[Counter+1] - PriceLow[Counter] < 0 Then 
+			MinusDM = 0 
+		Else 
+			MinusDM = PriceLow[Counter+1] - PriceLow[Counter];
+		If MinusDM >= PlusDM Then 
+			PlusDM = 0;  
+		{MinusDM not set to 0 because it is not used}
+		TRange = TRange + TrueRangeCustom[Counter](PriceHigh, PriceLow, PriceClose);
+		PlusDM14 = PlusDM14 + PlusDM;
+	End;
+	If TRange <> 0 Then 
+		gdDMIplusCustom = 100 * PlusDM14 / TRange
+	Else 
+		gdDMIplusCustom = 0 ;
+End
+Else
+	If CurrentBar > 1 Then Begin
+		If PriceHigh[0] - PriceHigh[1] < 0 Then 
+			PlusDM = 0 
+		Else 
+			PlusDM = PriceHigh[0] - PriceHigh[1];
+		If PriceLow [1] - PriceLow [0] < 0 Then 
+			MinusDM = 0 
+		Else 
+			MinusDM = PriceLow[1] - PriceLow[0];
+		If MinusDM >= PlusDM Then 
+			PlusDM = 0;  
+		{MinusDM not set to 0 because it is not used}
+		If MyRange > 0 Then Begin
+			TRange = TRange[1] - (TRange[1] / MyRange) + TrueRangeCustom(PriceHigh, PriceLow, PriceClose);
+			PlusDM14 = PlusDM14[1] - (PlusDM14[1] / MyRange) + PlusDM;
+		End;
+		If TRange <> 0 Then 
+			gdDMIplusCustom = 100 * PlusDM14 / TRange
+		Else 
+			gdDMIplusCustom = 0 ;
+	End ;

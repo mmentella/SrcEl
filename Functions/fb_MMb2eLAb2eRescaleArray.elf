@@ -1,0 +1,11 @@
+Inputs: _Array[M](NumericArrayRef), ScaleFactor(NumericSimple), Length(NumericSimple);
+
+vars: j(0);
+
+if length > M + 1 then raiseruntimeerror("RescaleArray => " + NumToStr(M,0));
+
+for j = 0 to length -1 begin
+ 
+ _array[j] = scalefactor * _array[j];
+ 
+end;

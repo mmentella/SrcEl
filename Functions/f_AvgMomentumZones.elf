@@ -1,0 +1,10 @@
+Inputs: Length(NumericSimple),H1(NumericRef),H2(NumericRef),L1(NumericRef),L2(NumericRef);
+
+vars: AM(0);
+
+AM = Average(absvalue(c - c[1]),length);
+
+h1 = c[1] + AM;
+h2 = h1 + AM;
+l1 = c[1] - AM;
+l2 = l1 - AM;

@@ -1,0 +1,21 @@
+{KAMA: Kaufman's Adaptive Moving Average}
+
+Inputs: Price(NumericSeries),Period(NumericSimple);
+
+Vars: efratio(0),smooth(1),fastend(.666),slowend(.0645),AMA(0),diff(0),signal(0),noise(0);
+
+{calculate efficiency ratio}
+efratio = 1;
+diff = absvalue(price - price[1]);
+
+if currentbar > period then begin
+ signal = absvalue(price - price[period]);
+ noise = Summation(diff,period);
+ if noise <> 0 then efratio = signal/noise;
+end
+else ama = price;
+
+smooth = power(efratio*(fastend-slowend) + slowend,2);
+ama = ama[1] + smooth*(price - ama[1]);
+
+KAMA = AMA;

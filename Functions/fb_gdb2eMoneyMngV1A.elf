@@ -1,0 +1,356 @@
+
+{**** - GD Money Management 2.0 - *****
+ Engine: Money Mng. Function
+ Author: Giulio D'Urso
+ Year: 2010
+ Market: ANY
+ TimeFrame: ANY
+ BackBars: 1
+ Update: 3 May 2011
+***************************************}
+
+
+{
+	ALL values passed for LONG trades are automatically  replicated
+	for SHORT trades, if correspondent SHORT values are set to 0.
+	To disable a SHORT value, set it to negative value (i.e. -1).
+	
+	Users should copy the:
+	"Stop-Limit Order Labels" (see below)
+	definitions to match the selected ExitTrade string.
+	Custom user-labels should start from 1000 (1010, 1020, ...)
+	since values 0-1000 are reserved.
+}
+
+
+{*******************
+  Output parameters
+ *******************}
+// Return the STOP price (and Label) nearest to the current market position,
+Inputs: StopOrderPrice(NumericRef), StopOrderLabel(NumericRef);
+// and complimentary LIMIT price for Modal and Target Profits.
+Inputs: ModalOrderPrice(NumericRef), TargetOrderPrice(NumericRef);
+
+
+{******************
+  Input parameters
+ ******************}
+
+{ System Inputs }
+Inputs: NoS(NumericSimple);
+Inputs: MarketEntry(NumericSimple);     // Could be  'EntryPrice' if LONG, '-EntryPrice' if SHORT
+                                        // i.e.:     'MarketPosition * EntryPrice'
+
+{ Money Management Inputs }
+Inputs: LossMng(TrueFalseSimple);
+Inputs: _DailyMaxLoss(NumericSimple){, _SettlePrice(NumericSimple)};
+Inputs: _StopLossLong(NumericSimple), _StopLossShort(NumericSimple), _StopLossAlgebric(TrueFalseSimple);
+Inputs: MoneyMng(TrueFalseSimple);
+Inputs: _ModExitLong(NumericSimple), _TargetLong(NumericSimple), _BrkStartLong(NumericSimple);
+Inputs: _TrailStartLong(NumericSimple), _TrailPercLong(NumericSimple), _TrailDeltaLong(NumericSimple), _TrailEndPercLong(NumericSimple);
+Inputs: _ModExitShort(NumericSimple), _TargetShort(NumericSimple), _BrkStartShort(NumericSimple);
+Inputs: _TrailStartShort(NumericSimple), _TrailPercShort(NumericSimple), _TrailDeltaShort(NumericSimple), _TrailEndPercShort(NumericSimple);
+
+{*****************************
+  Local Variables (Constants)
+ *****************************}
+
+{ Money Management Constants }
+// Stop-Limit Order Labels
+Variables: lblNone(-1), lblStopLoss(10), lblStopAlgebric(15), lblModal(20), lblTarget(20), lblBreakEven(30), lblTrailing(40),
+           lblATR(50), lblHLbars(60), lblTimeOut(70), lblDayProfit(90), lblDayStop(99), lblEngine(100), hugePrice(999999);
+Variables: BPVinv(1 / BigPointValue);
+Variables: tickUnit(MinMove / PriceScale),                                 { TickSize, Points }
+           trade$Cost((Commission + Slippage) * 2),                                   { $$$ }
+           tradeCost((IntPortion(trade$Cost * BPVinv / tickUnit) + 1) * tickUnit),   { Points }
+           entry$Cost(0.5 * tradeCost * BigPointValue);                                { $$$ }
+Variables: dayLoss$Limit(-(_DailyMaxLoss - NoS * entry$Cost));                            { $$$ }
+Variables: stopLloss(IntPortion((_StopLossLong * BPVinv) / tickUnit) * tickUnit),    { Points }
+           stopSloss(IntPortion((_StopLossShort * BPVinv) / tickUnit) * tickUnit),   { Points }
+           stopLmod(IntPortion((_ModExitLong * BPVinv) / tickUnit) * tickUnit),      { Points }
+           stopSmod(IntPortion((_ModExitShort * BPVinv) / tickUnit) * tickUnit),     { Points }
+           stopLtgt(IntPortion((_TargetLong * BPVinv) / tickUnit) * tickUnit),       { Points }
+           stopStgt(IntPortion((_TargetShort * BPVinv) / tickUnit) * tickUnit),      { Points }
+           startBrkL(_BrkStartLong * BPVinv), startBrkS(_BrkStartShort * BPVinv);    { Points }
+Variables: gMinL(_TrailStartLong * BPVinv), gMaxL(_TrailStartLong * BPVinv),         { Points }
+           gLossMinL(_TrailStartLong * BPVinv * _TrailPercLong / 100), gainMulL(0),  { Points }
+           gMinS(_TrailStartShort * BPVinv), gMaxS(_TrailStartShort * BPVinv),       { Points }
+           gLossMinS(_TrailStartShort * BPVinv * _TrailPercShort / 100), gainMulS(0);   { Points }
+
+
+{*****************
+  Local variables
+ *****************}
+
+{ Money Management Variables }
+Vars: eqTotal(0), eqYestClose(0), eqYestSettle(0), eqDay(0), dayTrade(true);
+Vars: lastTradeID(-1), lastEntry(lastTradeID);
+Vars: posHi(0.0), posLo(0.0), gain(0.0), numContracts(0), stopVal(0);
+Vars: posStop(0.0), posMod(0), posTgt(0), posBrk(0); { Points }
+Vars: stp$Loss(0), stp$Mod(0), stp$Tgt(0), stp$Brk(0); { $$$ }
+
+
+{******
+  Init
+ ******}
+
+if CurrentBar <= 1 then begin
+
+	{ Money Management Init }
+	if _StopLossLong <= 0 then stopLloss = 0;
+	if _StopLossShort < 0 then stopSloss = 0
+	else if _StopLossShort = 0 then stopSloss = stopLloss;
+	if _ModExitLong <= 0 then stopLmod = 0;
+	if _ModExitShort < 0 then stopSmod = 0
+	else if _ModExitShort = 0 then stopSmod = stopLmod;
+	if _TargetLong <= 0 then stopLtgt = 0;
+	if _TargetShort < 0 then stopStgt = 0
+	else if _TargetShort = 0 then stopStgt = stopLtgt;
+	if _BrkStartLong <= 0 then startBrkL = hugePrice;
+	if _BrkStartShort < 0 then startBrkS = hugePrice
+	else if _BrkStartShort = 0 then startBrkS = startBrkL;
+	if _TrailStartLong <= 0 then
+		gMinL = hugePrice
+	else
+		if _TrailDeltaLong > 0 then begin
+			gMaxL = (_TrailStartLong + _TrailDeltaLong) * BPVinv;
+			gainMulL = (gMaxL * _TrailEndPercLong / 100 - gLossMinL) / (_TrailDeltaLong * BPVinv);
+		end;
+	if _TrailStartShort < 0 then
+		gMinS = hugePrice
+	else
+	if _TrailStartShort > 0 then begin
+		if _TrailDeltaShort > 0 then begin
+			gMaxS = (_TrailStartShort + _TrailDeltaShort) * BPVinv;
+			gainMulS = (gMaxS * _TrailEndPercShort / 100 - gLossMinS) / (_TrailDeltaShort * BPVinv);
+		end;
+	end else begin // _TrailStartShort = 0
+		gMinS = gMinL; gMaxS = gMaxL; gLossMinS = gLossMinL; gainMulS = gainMulL;
+	end;
+
+end;
+
+
+{******************
+  Position Update
+ ******************}
+
+{ Day Equity }
+eqTotal = NetProfit + PositionProfit;
+if Date > Date[1] then eqYestClose = eqTotal[1];
+{
+if Date > Date[1] then
+	if eqYestSettle = 0 then eqYestClose = eqTotal[1] else eqYestClose = eqYestSettle;
+	eqYestSettle = 0;
+end;
+if _SettlePrice > 0 then if eqYestSettle = 0 then eqYestSettle = eqTotal;
+}
+eqDay = eqTotal - eqYestClose;
+if _DailyMaxLoss > 0 and LossMng then begin
+	if Date > Date[1] then
+		dayTrade = true
+	else
+		if dayTrade then
+			if eqDay <= dayLoss$Limit then
+				dayTrade = false;
+end;
+gd.MoneyMngV1A = dayTrade;
+
+{ Max/Min position level }
+numContracts = CurrentContracts;
+if MarketEntry > 0 then begin
+	if MarketEntry <> lastTradeID then begin
+		lastTradeID = MarketEntry; posHi = MarketEntry; end
+	else
+		if High > posHi then posHi = High;
+	gain = PosHi - MarketEntry - tradeCost;
+end
+else
+if MarketEntry < 0 then begin
+	if MarketEntry <> lastTradeID then begin
+		lastTradeID = MarketEntry; posLo = -MarketEntry; end
+	else
+		if Low < posLo then posLo = Low;
+	gain = -MarketEntry - PosLo - tradeCost;
+end
+else begin
+	numContracts = NoS;
+	lastTradeID = -1;
+	lastEntry = -1;
+end;
+
+
+{******************
+  Bar Operations
+ ******************}
+
+StopOrderLabel = lblNone;
+
+if MarketEntry <> 0 then begin   // Start of Money Management only if At Market
+
+	{ Init Parameters }
+	if MarketEntry > 0 then begin
+		StopOrderPrice = 0;
+		ModalOrderPrice = hugePrice; TargetOrderPrice = hugePrice;
+	end
+	else
+	if MarketEntry < 0 then begin
+		StopOrderPrice = hugePrice;
+		ModalOrderPrice = 0; TargetOrderPrice = 0;
+	end;
+
+	if lastTradeID <> lastEntry then begin
+		{ New trade started }
+		lastEntry = lastTradeID;
+		if MarketEntry > 0 then begin
+			posStop = MarketEntry - stopLloss + tradeCost;
+			stp$Loss = _StopLossLong;
+			posMod = MarketEntry + stopLmod + tradeCost;
+			stp$Mod = _ModExitLong;
+			posTgt = MarketEntry + stopLtgt + tradeCost;
+			stp$Tgt = _TargetLong;
+			posBrk = MarketEntry + tradeCost * 1.5;
+			stp$Brk = _BrkStartLong;
+		end
+		else begin
+			posStop = -MarketEntry + stopSloss - tradeCost;
+			if _StopLossShort = 0 then stp$Loss = _StopLossLong else stp$Loss = _StopLossShort;
+			posMod = -MarketEntry - stopSmod - tradeCost;
+			if _ModExitShort = 0 then stp$Mod = _ModExitLong else stp$Mod = _ModExitShort;
+			posTgt = -MarketEntry - stopStgt - tradeCost;
+			stp$Tgt = _TargetLong;
+			if _TargetShort = 0 then stp$Tgt = _TargetLong else stp$Tgt = _TargetShort;
+			posBrk = -MarketEntry - tradeCost * 1.5;
+			if _BrkStartShort = 0 then stp$Brk = _BrkStartLong else stp$Brk = _BrkStartShort;
+		end;
+	end;
+
+
+{******************
+  LOSS Management
+ ******************}
+
+	if LossMng then begin
+
+		if _DailyMaxLoss > 0 then begin
+			{ Day Position Check }
+			if dayTrade then begin
+				if MarketEntry > 0 then begin
+					stopVal = Close - (eqDay + (_DailyMaxLoss - entry$Cost * numContracts)) * BPVinv / numContracts;
+					if stopVal > StopOrderPrice then begin
+						StopOrderPrice = stopVal; StopOrderLabel = lblDayStop; end;
+				end else begin
+					stopVal = Close + (eqDay + (_DailyMaxLoss - trade$Cost * numContracts)) * BPVinv / numContracts;
+					if stopVal < StopOrderPrice then begin
+						StopOrderPrice = stopVal; StopOrderLabel = lblDayStop; end;
+				end;
+			end
+			else begin
+				StopOrderLabel = lblDayStop;
+				if MarketEntry > 0 then StopOrderPrice = hugePrice else StopOrderPrice = 0;
+			end;
+		end;
+
+		if stp$Loss > 0 then begin
+			if MarketEntry > 0 then begin
+				{ Relative (algebric) Stop Loss }
+				if _StopLossAlgebric and gain > 0 then begin
+					stopVal = posHi - stopLloss + tradeCost;
+					if stopVal > StopOrderPrice then begin StopOrderPrice = stopVal; StopOrderLabel = lblStopAlgebric; end;
+				end
+				else
+				{ Absolute Stop Loss }
+					if posStop > StopOrderPrice then begin StopOrderPrice = posStop; StopOrderLabel = lblStopLoss; end;
+			end
+			else
+				{ Relative (algebric) Stop Loss }
+				if _StopLossAlgebric and gain > 0 then begin
+					stopVal = posLo + stopLloss - tradeCost;
+					if stopVal < StopOrderPrice then begin StopOrderPrice = stopVal; StopOrderLabel = lblStopAlgebric; end;
+				end
+				else
+				{ Absolute Stop Loss }
+				if posStop < StopOrderPrice then begin StopOrderPrice = posStop; StopOrderLabel = lblStopLoss; end;
+		end;
+
+	end;   // of LOSS management
+
+
+{******************
+  Money Management
+ ******************}
+
+	if MoneyMng then begin   { being into the market, money management }
+
+		{ LONG position Money Management }
+		if MarketEntry > 0 then begin
+
+			{ Break-Even Stops }
+			if stp$Brk > 0 then
+			{
+				if gain < startBrkL then begin
+					if stp$Brk > 0 then
+						if stopMin < posBrk and posBrk < stopMax then SetBreakEven(stp$Brk);
+				end else
+			}
+				if gain >= startBrkL then
+					if posBrk > StopOrderPrice then begin
+						StopOrderPrice = posBrk; StopOrderLabel = lblBreakEven; end;
+
+			{ Modal Profit Target }
+			if stp$Mod > 0 then
+				if numContracts < NoS then
+					stp$Mod = 0
+				else
+					if High >= posMod then ModalOrderPrice = 0 else ModalOrderPrice = posMod;
+
+			{ Absolute Profit Target }
+			if stp$Tgt > 0 and stp$Mod <= 0 then
+				if High >= posTgt then TargetOrderPrice = 0 else TargetOrderPrice = posTgt;
+
+			{ Trailing Stop }
+			if gain >= gMinL then begin
+				{ calculate allowed profit-loss between 'GainLossMin' and 'GainLossMax', or use 'GainLossMin' as fixed value }
+				stopVal = posHi - (gLossMinL + (MinList(gain, gMaxL) - gMinL) * gainMulL) + tradeCost;
+				if stopVal > StopOrderPrice then begin StopOrderPrice = stopVal; StopOrderLabel = lblTrailing; end;
+			end;
+
+		end { of LONG Position Management }
+
+		{ SHORT position Money Management }
+		else begin
+			{ Break-Even Stops }
+			if stp$Brk > 0 then
+			{
+				if gain < startBrkL then begin
+					if stp$Brk > 0 then
+						if stopMin < posBrk and posBrk < stopMax then SetBreakEven(stp$Brk);
+				end else
+			}
+				if gain >= startBrkS then
+					if posBrk < StopOrderPrice then begin
+						StopOrderPrice = posBrk; StopOrderLabel = lblBreakEven; end;
+
+			{ Modal Profit Target }
+			if stp$Mod > 0 then
+				if numContracts < NoS then
+					stp$Mod = 0
+				else
+					if Low <= posMod then ModalOrderPrice = hugePrice else ModalOrderPrice = posMod;
+
+			{ Absolute Profit Target }
+			if stp$Tgt > 0 and stp$Mod <= 0 then
+				if Low <= posTgt then TargetOrderPrice = hugePrice else TargetOrderPrice = posTgt;
+
+			{ Trailing Stop }
+			if gain >= gMinS then begin
+				{ calculate allowed profit-loss between 'GainLossMin' and 'GainLossMax', or use 'GainLossMin' as fixed value }
+				stopVal = posLo + (gLossMinS + (MinList(gain, gMaxS) - gMinL) * gainMulL) - tradeCost;
+				if stopVal > StopOrderPrice then begin StopOrderPrice = stopVal; StopOrderLabel = lblTrailing; end;
+			end;
+
+		end; { of SHORT Position Management }
+
+	end; { of Money Mng }
+
+end; { of At Market operations }

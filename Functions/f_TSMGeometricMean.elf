@@ -1,0 +1,13 @@
+[LegacyColorValue = TRUE];
+
+{ TSMGeometricMean: The nth root of the n products
+  Copyright 1998-2004, PJ Kaufman. All rights reserved }
+
+	inputs: price(numericseries), length(numericsimple);
+	vars:	product(0), ix(0);
+
+	product = 1;
+	for ix = 0 to length - 1 begin
+		product = product * price[ix];
+		end;
+	TSMGeometricMean = power(product,1/length);

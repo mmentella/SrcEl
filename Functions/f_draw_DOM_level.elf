@@ -1,0 +1,46 @@
+Input:
+price(NumericSimple), size(NumericSimple), token(NumericSimple),
+MaxSize(NumericSimple), Color(NumericSimple), IsLast(TrueFalse);
+
+const : array_max_size(20);
+array: intrabarpersist chnls[array_max_size](0);
+array: intrabarpersist chnltxts[array_max_size](0);
+
+
+var : _date(0), _time(0), _date_m(0), _time_m(0);
+_date = 0;
+_time = 0;
+_date_m = 0;
+_time_m = 0;
+
+calc_dt_range(size / MaxSize, _date, _time, _date_m, _time_m);
+
+if (token > array_max_size) then #return;
+
+if chnls[token] <> 0 then tl_delete(chnls[token]);
+
+chnls[token] = tl_new_s( _date, _time, price, _date_m, _time_m, price);
+tl_setextright(chnls[token], true);
+tl_setcolor(chnls[token], Color);
+tl_setsize(chnls[token], 10);
+
+if chnltxts[token] <> 0 then text_delete(chnltxts[token]);
+
+chnltxts[token] = text_new_s(_date_m, _time_m, price, text(size:0:0));
+text_setattribute(chnltxts[token], 1, true);
+text_setcolor(chnltxts[token], white);
+
+
+var: idx(0);
+if IsLast then begin
+	for idx = token + 1 to array_max_size begin
+		if chnls[idx] <> 0 then begin
+			tl_delete(chnls[idx]);
+			chnls[idx] = 0;
+		end;
+		if chnltxts[idx] <> 0 then begin
+			text_delete(chnltxts[idx]);
+			chnltxts[idx] = 0;
+		end;
+	end;
+end;

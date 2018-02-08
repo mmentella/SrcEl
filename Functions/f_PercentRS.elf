@@ -1,0 +1,16 @@
+[LegacyColorValue = TRUE];
+
+{*******************************************************************
+Description: Percent R
+Provided By: Omega Research, Inc. (c) Copyright 1999
+********************************************************************}
+
+Inputs: Length(NumericSimple);
+Variables: HiLoDiff(0);
+
+HiLoDiff = (Highest(High, Length) - Lowest(Low, Length));
+
+If HiLoDiff <> 0 Then 
+	PercentRS = 0 - ((Lowest(Low, Length) - Close) / HiLoDiff) * 100
+Else
+	PercentRS = 0;

@@ -1,0 +1,15 @@
+[LegacyColorValue = true]; 
+
+{
+***** Study name: 'IDHigh'
+}
+{ ***** DLLs Section ***** }
+{ ***** INPUTs Section *****}
+{ ***** VARs Section ***** }
+Variables: HTODAY(0);
+{ ***** ARRAYs Section *****}
+{ ***** CODE Section ***** }
+HTODAY = HTODAY[1] ;
+IF DATE > DATE[1] THEN HTODAY = 0 ;
+IF HIGH > HTODAY THEN HTODAY = HIGH ;
+IDHigh = HTODAY ;

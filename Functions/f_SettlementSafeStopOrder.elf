@@ -1,0 +1,12 @@
+Inputs: OrderValue(NumericSimple),TickSettlementLimit(NumericSimple),SettlementTime(NumericSimple);
+
+vars: cd(0),max(0),min(0);
+
+if SettlementTime = 0 then if d > d[1] then cd = c[1];
+if SettlementTime <> 0 then if (t[1] <= SettlementTime and t > SettlementTime) then cd = c[1];
+
+max = cd + TickSettlementLimit point;
+min = cd - TickSettlementLimit point;
+
+if min < OrderValue and OrderValue < max then SettlementSafeStopOrder = True
+else SettlementSafeStopOrder = false;

@@ -1,0 +1,14 @@
+   Variables: Res(0); 
+   
+   
+        if TickSize*100000 = 1 then Res = 5;
+        if TickSize*10000 = 1 then Res = 4;
+        if TickSize*1000 = 1 then Res = 3;
+        if TickSize*100 = 1 then Res = 2;
+        if TickSize*10 = 1 then Res = 1;
+        if TickSize*1 = 1 then Res = 0;
+        
+        
+        Digits = Res;
+        
+        //if TickSize*100000 - IntPortion(TickSize*100000) = 0 

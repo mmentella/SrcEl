@@ -1,0 +1,99 @@
+Inputs: Price(NumericSeries),N(NumericSimple),M100(NumericSimple);
+
+vars: j(0),k(0),p(0),num(0),den(0),CT(0),ST(0),M(0);
+
+vars: length(0),prevlength(0),MaxPwr(0),color1(0),color2(0),x(0),smooth(0),cycle(0);
+
+array: ef[50](0),eb[50](0),efp[50](0),ebp[50](0),ak[50](0),aa[50](0),SPECTRUM[50](0),DB[50](0);
+
+value1 = MM.MesaFilter(Price);
+
+//INITIALIZATION
+length = iff(prevlength=0,N,prevlength);
+M = IntPortion(iff(M100<1,M100,M100/100)*length+.5);
+
+for j = 1 to length - 1 begin
+ ef[j] = value1[j];
+ eb[j] = value1[j-1];
+ ak[j] = 0;
+ aa[j] = 0;
+end;
+
+for k = 1 to M begin
+ 
+ for j = k to length - 1 begin
+  efp[j-k+1] = ef[j];
+ end;
+ 
+ for j = 1 to length - k begin
+  ebp[j] = eb[j];
+ end;
+ 
+ num = 0;
+ den = 0;
+ 
+ for j = 1 to length - k begin
+  num = num + efp[j]*ebp[j];
+  den = den + efp[j]*efp[j] + ebp[j]*ebp[j];
+ end;
+ 
+ ak[k] = -2*num/den;
+ 
+ for j = 1 to length - k begin
+  ef[j] = efp[j] + ak[k]*ebp[j];
+  eb[j] = ebp[j] + ak[k]*efp[j];
+ end;
+ 
+ if k > 1 then for j = 1 to k - 1 begin
+  ak[j] = aa[j] + ak[k]*aa[k-j];
+ end;
+ 
+ for j = 1 to k begin
+  aa[j] = ak[j];
+ end;
+ 
+end;
+
+MaxPwr = -1;
+
+for p = 6 to 50 begin
+
+ CT = 0;
+ ST = 0;
+ 
+ for j = 1 to M begin
+  CT = CT + ak[j]*cosine(360*j/p);
+  ST = ST + ak[j]*Sine(360*j/p);
+ end;
+ 
+ SPECTRUM[p] = 1/( (1+CT)*(1+CT) + ST*ST );
+ 
+ if SPECTRUM[p] > MaxPwr then begin MaxPwr = SPECTRUM[p]; prevlength = p; end;
+ 
+end;
+
+{
+//Normalize Power Levels and Convert to Decibels
+For p = 6 to 50 Begin
+
+ IF MaxPwr > 0 and SPECTRUM[p] > 0 Then DB[p] = -10*LOG(.01 / (1-.99*SPECTRUM[p] / MaxPwr))/Log(10);
+ If DB[p] > 20 then DB[p] = 20;
+
+End;}
+{
+//Find Dominant Cycle using CG algorithm
+value1 = 0;
+value2 = 0;
+
+For p = 6 to 50 Begin
+
+ If DB[p] < 3 Then Begin
+ value1 = value1 + p*(3 - DB[p]);
+ value2 = value2 + (3 - DB[p]);
+ End;
+
+End;
+
+If value2 <> 0 then prevlength = value1/value2;
+}
+MM.BurgPeriod = prevlength;

@@ -1,0 +1,10 @@
+
+Inputs: Price(NumericSimple);
+
+Variables: tickUnit(MinMove / PriceScale); { MinMove, Points }
+
+Vars: p(0);
+
+p = IntPortion(Price / tickUnit) * tickUnit;
+if p < Price then p = p + tickUnit;
+CeilMarketPrice = p;

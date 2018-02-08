@@ -1,0 +1,19 @@
+[LegacyColorValue = TRUE];
+
+{ VIDYA : Variable Index Dynamic Average by Tuschar Chande
+  Copyright 1997-1998, PJ Kaufman. All rights reserved.
+
+  Period suggested at 9, histper suggested at > 9 }
+
+	input:	period(numericsimple), histper(numericsimple);
+	var:	k(0), sc(0);
+
+{ relative volatility }
+	if currentbar <= period then VIDYA = close
+		else begin
+			k = @stddev(close, period) / @stddev(close,histper);
+{ smoothing constant }
+			sc = 2 / (period + 1);
+{ VIDYA is faster if relative volatility is higher }
+			VIDYA = k*sc*close + (1 - k*sc)*VIDYA[1];
+		end;

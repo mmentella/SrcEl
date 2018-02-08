@@ -1,0 +1,4 @@
+Input: _strAccount(StringSimple);
+
+RaiseRuntimeError("GetBDDayTradingBuyingPower function is currently not implemented");
+GetBDDayTradingBuyingPower = 0;

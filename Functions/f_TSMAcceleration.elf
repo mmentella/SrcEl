@@ -1,0 +1,10 @@
+[LegacyColorValue = TRUE];
+
+{ TSMAcceleration: Acceleration
+  Copyright 1999-2004, P.J.Kaufman. All rights reserved.
+}
+  inputs: price(numericseries), length(numericsimple);
+  vars: slope(0);
+
+  slope = TSMLRslope(price,length);
+  TSMacceleration = slope - slope[1];

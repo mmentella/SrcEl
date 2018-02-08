@@ -1,0 +1,15 @@
+Input: _Account(StringSimple);
+
+// Assuming that Unrealized PL (TS) is same as Open PL (MC)
+
+begin
+
+GetRTUnrealizedPL = 0;
+for value1 = 1 to tm_accounts_count begin
+	if 	_Account = tm_account_str_value(value1, 2000) then begin
+		GetRTUnrealizedPL = tm_account_num_value(value1, 1002);
+		break;
+	end;
+end; 
+
+end

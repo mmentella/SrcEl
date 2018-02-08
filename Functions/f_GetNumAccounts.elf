@@ -1,0 +1,3 @@
+begin
+GetNumAccounts = tm_accounts_count;
+end

@@ -1,0 +1,63 @@
+[LegacyColorValue = TRUE];
+
+{ TSMSWGsignal : User Function to determine swing direction and new swing breakouts 
+  Copyright 1994-2004, P J Kaufman. All rights reserved.
+  Disclaimer: }
+
+{ phigh = input series high price
+  plow = input series low price
+  pclose = input series closing price }
+
+{ rules for TSMSWGsignal
+  swing in whole percent
+  direction & breakout:
+    +1 up, +2 up breakout
+     0 none
+    -1 dn, -2 dnbreakout 
+  type : 0= normal, 1= 3 month rate, 2= bond 
+  signal rules:
+      buy when upswing is above prior upswing
+      sell when downswing is below prior downswing }
+
+input: phigh(numericseries), plow(numericseries), pclose(numericseries), swing(numeric), type(numericsimple);
+vars:  minswing(0), last(0) , curhigh(0) , curlow(0), swhigh(0) , swlow(0), swingdir(0), signal(0);
+
+minswing = swing*pclose/100;
+{ SWINGS: Initialize most recent high and low }
+if currentbar = 1 then begin
+    curhigh = pclose;              {current high}
+    curlow  = pclose;              {current low}
+    end;                                    
+{ Search for a new high }
+if last<>1 then begin
+      if phigh > curhigh then curhigh = phigh;          {new current high}
+      if plow < curhigh - minswing then begin
+         last = 1;               {last high fixed}
+         swhigh   = curhigh;     {new verified high}
+         curlow = plow;          {initialize new lows}
+         end;
+      end
+{ Search for a new low }
+   else begin
+      if last <> -1 then begin
+          if plow < curlow then curlow = plow;
+          if phigh > curlow + minswing then begin
+             last = -1;
+             swlow   = curlow;
+             curhigh = phigh;    {initialize current high}
+             end;
+         end;
+      end;
+{ Buy and sell signals }
+   signal = signal[1];
+   swingdir = 0;
+   if last = 1 then begin
+       swingdir = -1;
+       if curlow < swlow  then signal = -1;
+       end;
+   if last = -1 then begin
+       swingdir = 1;
+       if curhigh > swhigh then signal = 1;
+       end;
+   TSMSWGsignal = signal;
+

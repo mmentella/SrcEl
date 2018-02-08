@@ -1,0 +1,21 @@
+
+// DAILY GAIN		{ Valutato Per Intera Posizione }
+
+Inputs: StartTime( NumericSimple );
+
+Vars: TotalGain(0), YestTotalGain(0), DailyGain(0), newDay(False);
+
+TotalGain = NetProfit + PositionProfit;
+
+if Date > Date[1] then begin
+	YestTotalGain = TotalGain[1];
+	newDay = True;
+end;
+{if newDay and Time > StartTime then begin
+	newDay = False;
+	if TotalGain > YestTotalGain then YestTotalGain = TotalGain;
+end;}
+
+DailyGain = ( TotalGain - YestTotalGain );
+
+GT.DailyGain = DailyGain;

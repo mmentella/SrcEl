@@ -1,0 +1,22 @@
+Inputs: Values[M](NumericArrayRef),Length(NumericSimple);
+
+vars: var0(0),j(0);
+
+if length > M + 1 then
+ var0 = 0
+
+else begin
+ 
+ var0 = 0;
+ 
+ for j = 0 to length - 1 begin
+  
+  var0 = var0 + values[j] * values[j];
+ 
+ end;
+ 
+ var0 = SquareRoot(var0);
+ 
+end;
+
+MM.LA.Norm = var0;

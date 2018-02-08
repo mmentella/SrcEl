@@ -1,0 +1,3 @@
+Input: Price(NumericSeries),Period(NumericSeries);
+
+HilbertTransform = (.0962*price + .5769*price[2] - .5769*price[4] - .0962*price[6])*(.075*period[1] + .54);

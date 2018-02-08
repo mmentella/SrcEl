@@ -1,0 +1,15 @@
+Inputs: Price(NumericSeries),alpha(NumericSimple),_oCurrentbar(NumericSimple),_oITrend(NumericRef),_oTrigger(NumericRef);
+
+vars: smooth(0),trend(0),trigger(0);
+
+trend = (alpha - alpha*alpha/4)*price + .5*alpha*alpha*price[1] - (alpha - .75*alpha*alpha)*price[2] + 
+         2*(1 - alpha)*trend[1] - (1 - alpha)*(1 - alpha)*trend[2];
+
+if currentbar - _oCurrentbar < 7 then trend = (price + 2*price[1] + price[2])/4;
+
+trigger = 2*trend - trend[2];
+
+if currentbar - _oCurrentbar < 3 then trigger = trend;
+
+_oITrend = trend;
+_oTrigger = trigger;

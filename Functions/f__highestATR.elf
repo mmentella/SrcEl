@@ -1,0 +1,24 @@
+[LegacyColorValue = true]; 
+
+{
+  Returns the highest ATR value from a short ATR and a longer ATR.
+
+	MAR 27 2004 : Holden Glova : Created
+}
+
+inputs:
+  shortATRLength(numericSimple), longATRLength(numericSimple);
+
+vars:
+	shortATRValue(0), longATRValue(0);
+
+
+shortATRValue = AvgTrueRange(shortATRLength);
+longATRValue  = AvgTrueRange(longATRLength);
+
+if shortATRValue > longATRValue then begin
+	_highestATR = shortATRValue;
+end
+else begin
+	_highestATR = longATRValue;
+end;

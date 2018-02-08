@@ -1,0 +1,4 @@
+Input: _strAccount(StringSimple);
+
+RaiseRuntimeError("GetBDCashBalance function is currently not implemented");
+GetBDCashBalance = 0;

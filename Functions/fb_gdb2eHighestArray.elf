@@ -1,0 +1,10 @@
+
+Inputs: Value[MaxSize](NumericArray), Length(NumericSimple);
+
+Vars: max(0), cnt(0), len(0);
+
+max = Value[0]; len = Length - 1;
+for cnt = 1 to len begin
+	if Value[cnt] > max then max = Value[cnt]; end;
+
+gd.HighestArray = max;

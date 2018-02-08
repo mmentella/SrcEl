@@ -1,0 +1,15 @@
+
+//MAX CONTRACT PROFIT	{ Valutato Per Singolo Contratto }
+
+Vars: MaxCP(0);
+
+if BarsSinceEntry = 0 then begin
+	if MarketPosition > 0 then MaxCP = High - EntryPrice
+	else if MarketPosition < 0 then MaxCP = EntryPrice - Low;
+end
+else begin
+	if MarketPosition > 0 then MaxCP = MaxList(MaxCP,High - EntryPrice)
+	else if MarketPosition < 0 then MaxCP = MaxList(MaxCP,EntryPrice - Low);
+end;
+
+GT.MaxContractProfit = MaxCP * BigPointValue;

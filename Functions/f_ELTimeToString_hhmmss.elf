@@ -1,0 +1,10 @@
+Inputs: ELTime(NumericSimple);
+
+vars: hh(""),mm("");
+
+value1 = IntPortion(ELTime/100);
+
+hh = RightStr("0"+NumToStr(value1,0),2);
+mm = RightStr("0"+NumToStr(ELTime - 100*value1,0),2);
+
+ELTimeToString_hhmmss = hh+":"+mm+":00";

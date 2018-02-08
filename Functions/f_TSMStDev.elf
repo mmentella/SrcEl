@@ -1,0 +1,13 @@
+[LegacyColorValue = TRUE];
+
+{Standard Deviation
+  Copyright 1998-2004, PJ Kaufman. All rights reserved }
+
+	inputs: price(numericseries), length(numericsimple);
+	vars:	n(0), diff(0), diff2(0);
+
+	n = length;
+	if currentbar < length then n = currentbar;
+	diff = price - average(price,n);
+	diff2 = power(diff,2);
+	TSMStDev = squareroot(average(diff2,n));

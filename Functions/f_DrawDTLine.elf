@@ -1,0 +1,10 @@
+Inputs: StartDate(NumericSimple),StartTime(NumericSimple),EndDate(NumericSimple),EndTime(NumericSimple),
+        StartPrice(NumericSimple),EndPrice(NumericSimple),Style(NumericSimple),Color(NumericSimple),Width(NumericSimple);
+//DrawDTLine(StartDate,StartTime,EndDate,EndTime,StartPrice,EndPrice,Style,Color,Width); 
+
+   value1 = TL_New(StartDate, StartTime, StartPrice, EndDate,EndTime, EndPrice);
+   tl_setcolor(value1,Color); 
+   tl_setstyle(value1,Style); 
+   tl_setsize(value1,Width); 
+
+   DrawDTLine = value1;

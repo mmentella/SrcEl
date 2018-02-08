@@ -1,0 +1,58 @@
+{*******************************************************************
+Description: Directional Movement Index Minus
+Provided By: Giulio D'Urso (c) Copyright 2009
+********************************************************************}
+
+Inputs: Length(NumericSimple);
+Variables:	Counter(0), TRange(0), MyRange(Length), MinusDM14(0), MinusDM(0), PlusDM(0);
+
+If CurrentBar = 1 Or Length <> MyRange Then Begin
+	MyRange = Length;
+	gdDMIminus = 0;
+	MinusDM14 = 0;
+	TRange = 0;
+	For Counter = 0 To MyRange-1 Begin
+		If High[Counter] - High[Counter+1] < 0 Then 
+			PlusDM = 0 
+		Else 
+			PlusDM = High[Counter] - High[Counter + 1];
+		If Low[Counter + 1] - Low[Counter] < 0 Then 
+			MinusDM = 0 
+		Else 
+			MinusDM = Low[Counter + 1] - Low[Counter];
+
+		If PlusDM >= MinusDM Then 
+			MinusDM = 0; 
+		{Plus DM not set to 0 because it is not used}
+		TRange = TRange + TrueRange[Counter]; 
+		MinusDM14 = MinusDM14 + MinusDM;
+	End;
+	If TRange <> 0 Then 
+		gdDMIminus = 100 * MinusDM14 / TRange
+	Else 
+		gdDMIminus = 0;
+End
+Else 
+	If CurrentBar > 1 Then Begin
+		If High[0] - High[1] < 0 Then 
+			PlusDM = 0 
+		Else 
+			PlusDM = High[0] - High[1];
+
+		If Low[1] - Low [0] < 0 Then 
+			MinusDM = 0 
+		Else 
+			MinusDM = Low[1] - Low[0] ;
+
+		If PlusDM >= MinusDM Then 
+			MinusDM = 0 ; 
+		{Plus DM not set to 0 because it is not used}
+		If MyRange > 0 Then Begin
+			TRange = TRange[1] - (TRange[1] / MyRange) + TrueRange;
+			MinusDM14 = MinusDM14[1] - (MinusDM14[1] / MyRange) + MinusDM;
+		End;
+		If TRange <> 0 Then 
+			gdDMIminus = 100 * MinusDM14 / TRange
+		Else 
+			gdDMIminus = 0;
+End;

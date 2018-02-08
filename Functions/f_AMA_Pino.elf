@@ -1,0 +1,21 @@
+[LegacyColorValue = true]; 
+
+Inputs: Price(NumericSeries), Period(Numeric);
+Vars:   Noise(0), Signal(0), Diff(0), efRatio(0), Smooth(1), Fastest(.6667), Slowest(.0645), AdaptMA(0);
+
+Diff = AbsValue(Price - Price[1]);
+
+If CurrentBar <= Period Then
+	AdaptMA = Close
+Else
+If CurrentBar >  Period Then Begin
+	Signal  = AbsValue(Price - Price[Period]);
+	Noise   = Summation(Diff, Period);
+	If Noise <> 0 Then
+		efRatio = Signal / Noise;
+	Smooth  = Power(efRatio * (Fastest - Slowest) + Slowest, 2);
+	AdaptMA = AdaptMA[1] + Smooth * (Price - AdaptMA[1]);
+End;
+
+AMA_Pino = AdaptMA;
+

@@ -1,0 +1,17 @@
+inputs: TargetCalcTime( numeric ) ;
+variables: var0( 0 ), var1( 0 ), var2( 0 ), var3( 0 ) ;
+
+var0 = TimeToMinutes( SessionEndTime( 1, 1 ) ) ;
+var2 = var0 - TimeToMinutes( SessionStartTime( 1, 1 ) ) ;
+var1 = 	var0 - TargetCalcTime ;
+condition1 = TargetCalcTime > var0 - 10 ;
+if condition1 then 
+	var1 = var1 - 2 ;
+if var1 < 0 then 
+	var1 = 0 ;
+if var1 > var2 then 
+	var1 = var2 ;
+if var2 > 0 then 
+	var3 = ( var2 - var1 ) / var2 ;
+	
+OS_FracDaysToExp = var3 ;

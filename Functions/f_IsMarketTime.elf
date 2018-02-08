@@ -1,0 +1,23 @@
+//
+// IsMarketTime EasyLanguage function
+//
+
+Inputs: OpenTime(NumericSimple), CloseTime(NumericSimple), BreakStart(NumericSimple), BreakStop(NumericSimple);
+
+Vars: PCdate(CurrentDate), PCtime(CurrentTime);
+
+IsMarketTime = true;
+
+if SessionLastBar then IsMarketTime = false
+
+else
+if Time < OpenTime or Time >= CloseTime then IsMarketTime = false
+
+else
+if BreakStart > OpenTime and BreakStart <= Time and Time < BreakStop then IsMarketTime = false
+
+else
+if Date = PCdate then
+	if PCtime < OpenTime or PCtime >= CloseTime then IsMarketTime = false
+	else
+	if BreakStart > OpenTime and BreakStart <= PCtime and PCtime < BreakStop then IsMarketTime = false;

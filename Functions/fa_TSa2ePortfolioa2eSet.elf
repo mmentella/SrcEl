@@ -1,0 +1,63 @@
+[LegacyColorValue = true]; 
+
+{*******************************************************************
+Name: TS.Portfolio.Set
+Analysis Type: Function
+Description: Function receives data from each TradeStation strategy being launched and transfers it to Portfolio Analyzer.
+Used: tsprtfl.dll
+Provided By: Trade Smart Research (c) Copyright 2001 - 2005
+         www.tsresearch.com
+*******************************************************************}
+
+Inputs: StrategyName(String), OpenRisk(NumericSeries),CurrentVolatility(NumericSeries),OpenExposure(NumericSeries); 
+Vars: StrName(""),Str1(""),BarVal(0),iMargin(0);
+Vars: iDate(0),iEquity(0),iNetProfit(0),iOpenPositionProfit(0), iOpenRisk(0), iOpenExposure(0), iCurrentVolatility(0), iAddFlag(True),iSvalue(0); 
+
+defineDLLFunc: "tsprtfl.DLL", int, "TS_AddValuePortfolio",lpstr,int,int,int,int,float,float,float,float,
+						  float,float,float,float,float,bool;
+defineDLLFunc: "tsprtfl.DLL", int, "TS_RefreshSeriesPortfolio",lpstr,float,float,lpstr;
+
+
+
+BarVal = CurrentBar;
+iDate = DateToJulian(Date);
+iEquity = NetProfit + Openpositionprofit;
+iNetProfit = NetProfit;
+iOpenPositionProfit = OpenPositionProfit;
+iOpenRisk = OpenRisk;
+iOpenExposure = OpenExposure;
+iCurrentVolatility = CurrentVolatility;
+iMargin = Margin;
+iSvalue = CurrentBar/CustomerID;
+
+if currentbar = 1 then begin
+		
+	If DataCompression = 1 then Str1 = NumToStr(barinterval,0) + "Min";
+	if DataCompression = 2 then Str1 = "Daily"; 
+	if DataCompression = 3 then Str1 = "Weekly";
+	if DataCompression = 4 then Str1 = "Monthly";
+	if DataCompression = 5 then Str1 = "P&F";
+	if DataCompression = 0 then Str1 = NumToStr(barinterval,0) + " " + "Tick";
+    StrName =GetSymbolName + " " + StrategyName + " " + Str1;
+    while StrLen(strName)<50 begin
+		 StrName=StrName+" ";
+    end;
+
+	TS_RefreshSeriesPortfolio(StrName,BigPointValue,iMargin,StrategyName);
+
+end;
+
+
+If BarVal > BarVal[1] Then Begin
+TS_AddValuePortfolio(StrName,iDate,Time,CurrentBar,MarketPosition(1),iEquity,iNetProfit, 
+		 iOpenPositionProfit,OpenRisk,OpenExposure,
+		 CurrentVolatility,CurrentContracts,Close,iSvalue,iAddFlag);
+
+End;
+
+TS.Portfolio.Set = 1;
+
+
+{***** Copyright (c) 2001-2005 Trade Smart Research, Ltd. All rights reserved. www.tsresearch.com *****
+***** Trade Smart Research reserves the right to modify or overwrite this analysis technique 
+      with each release. *****}

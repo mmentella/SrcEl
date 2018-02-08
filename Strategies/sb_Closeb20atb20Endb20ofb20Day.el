@@ -1,0 +1,2 @@
+[IntrabarOrderGeneration = false]
+SetExitOnClose ;

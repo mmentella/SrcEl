@@ -1,0 +1,101 @@
+{*******************************************************************
+Description	: This Function returns Classic Relative Strength Index
+Provided By	: Giulio D'Urso
+********************************************************************}
+
+Inputs: Price(NumericSeries), Length(NumericSimple);
+
+Variables: lastLen(0), len0(0), upPrice(0), downPrice(0);
+Variables: counter(0), upSum(0), downSum(0), upAvg(0), downAvg(0);
+
+{if CurrentBar < 51 then
+	Print("Bar #", CurrentBar:2:0,", ", Date:7:0, " - ", Time:4:2, ", N = ", Length:2:0, ", upSum =", upSum, ", downSum =", downSum, " (GD)");}
+
+if CurrentBar <= Length or CurrentBar <= lastLen then begin
+	{if CurrentBar < 51 then
+		Print("    lastLen = ", lastLen:2:0, " (GD)");}
+	upSum = 0;
+	downSum = 0;  
+	len0 = Length - 1;
+	for counter = 1 to len0 begin
+		upPrice = Price[counter] - Price[counter + 1];
+		if upPrice >= 0 then begin
+			downPrice = 0;
+			upSum = upSum + upPrice;
+		end
+		else begin
+			downPrice = -upPrice;
+			upPrice = 0;
+			downSum = downSum + downPrice;
+		end;
+	end;
+	lastLen = Length;
+	upPrice = Price - Price[1];
+	if upPrice >= 0 then begin
+		downPrice = 0;
+		upSum = upSum + upPrice;
+	end
+	else begin
+		downPrice = -upPrice;
+		upPrice = 0;
+		downSum = downSum + downPrice;
+	end;
+	{if CurrentBar < 51 then
+		Print("    'upPrice[", CurrentBar:2:0, "]' =", upPrice, ", downPrice[", CurrentBar:2:0, "]' =", downPrice, " (GD)");}
+end
+
+else begin
+
+upPrice = Price - Price[1];
+if upPrice >= 0 then begin
+	downPrice = 0;
+	upSum = upSum + upPrice;
+end
+else begin
+	downPrice = -upPrice;
+	upPrice = 0;
+	downSum = downSum + downPrice;
+end;
+{if CurrentBar < 51 then
+	Print("    'upPrice[", CurrentBar:2:0, "]' =", upPrice, ", downPrice[", CurrentBar:2:0, "]' =", downPrice, " (GD)");}
+
+if Length > lastLen then begin
+	{if CurrentBar < 51 then
+		Print("    'Length' greater than 'lastLen' (GD)");}
+	len0 = Length - 1;
+	for counter = lastLen + 1 to len0 begin
+		{if CurrentBar < 51 then
+			Print("    adding 'upPrice[", (CurrentBar - counter):2:0, "]'(", upPrice[counter], ") and 'downPrice[", (CurrentBar - counter):2:0, "]'(", downPrice[counter], ") (GD)");}
+		upSum = upSum + upPrice[counter];
+		downSum = downSum + downPrice[counter];
+	end;
+	lastLen = Length;
+end
+else
+if Length < lastLen then begin
+	{if CurrentBar < 51 then
+		Print("    'Length' less than 'lastLen' (GD)");}
+	for counter = Length to lastLen begin
+		{if CurrentBar < 51 then
+			Print("    removing 'upPrice[", (CurrentBar - counter):2:0, "]'(", upPrice[counter], ") and downPrice[", (CurrentBar - counter):2:0, "]'(", downPrice[counter], ") (GD)");}
+		upSum = upSum - upPrice[counter];
+		downSum = downSum - downPrice[counter];
+	end;
+	lastLen = Length;
+end
+else begin
+	{if CurrentBar < 51 then
+		Print("    'Length' equal to 'lastLen' (GD)");}
+	upSum = upSum - upPrice[Length];
+	downSum = downSum - downPrice[Length];
+end;
+
+end;
+
+if upSum + downSum <> 0 then
+	gdRSI = 100 * upSum / (upSum + downSum)
+else
+	gdRSI = 0;
+
+{if CurrentBar < 51 then
+	Print("==== (GD)");}

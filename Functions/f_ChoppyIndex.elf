@@ -1,0 +1,4 @@
+[LegacyColorValue = TRUE];
+
+If HighestBar(TrueHigh, 30) <= LowestBar(TrueLow, 30) then ChoppyIndex = 10*(Highest(TrueHigh, 30) - Lowest(TrueLow, 30))
+else ChoppyIndex = - 10*(Highest(TrueHigh, 30)-Lowest(TrueLow, 30));

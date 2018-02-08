@@ -1,0 +1,10 @@
+inputs: 
+	Array_[MaxSize]( numericarrayref ), NewLast(NumericRef);
+	
+for value1 = MaxSize downto 1 begin
+	if 0 <> Array_[value1] then
+		break;
+end;
+
+NewLast = value1;
+array_setmaxindex(Array_, NewLast);

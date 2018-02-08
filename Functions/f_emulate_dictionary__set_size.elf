@@ -1,0 +1,9 @@
+
+inputs:
+	KeyArray[MaxSize1](NumericArrayRef),
+	ValueArray[MaxSize2](NumericArrayRef),
+
+	NewSize(NumericSimple);
+
+array_setmaxindex(KeyArray, NewSize - 1);
+array_setmaxindex(ValueArray, NewSize - 1);

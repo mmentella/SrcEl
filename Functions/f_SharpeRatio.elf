@@ -1,0 +1,79 @@
+Input:
+	Period(NumericSimple), {0=monthly, 1=daily}
+	IntRate(NumericSimple), {interest rate}
+	CalculateRatio(TrueFalseSimple), {final calculation}
+	InitCapital(NumericSimple); {initial capital}
+		
+array: periods_returns[](0), periods_return_percent[](0);
+var: intrabarpersist last_idx(0);
+
+var: new_periods(0);
+
+new_periods = 0;
+
+var: recalcpersist int_rate_per_period(12);
+
+once begin
+	switch (Period) begin
+		case 0 : int_rate_per_period = IntRate / 12 / 100;
+		case 1 : int_rate_per_period = IntRate / 365 / 100;
+	end;
+end;
+
+var: intrabarpersist start(False);
+once (0 <> i_CurrentContracts or 0 <> i_OpenEquity) start = true;
+
+if not start then
+	#return;
+	
+
+switch (Period) begin
+	case 0 : begin
+		new_periods = MonthsCount;
+		end;
+	case 1 : begin
+		new_periods = DaysCount;
+		end;		
+end;
+
+var: intrabarpersist prev_equity(0);
+
+var: Equity(0);
+Equity = i_OpenEquity;
+
+if 0 < new_periods then begin
+	array_setmaxindex(periods_returns, last_idx + new_periods);
+	
+	periods_returns[last_idx + 1] = Equity[1] - prev_equity;
+
+	for value1 = 2 to new_periods - 1 begin
+		periods_returns[last_idx + value1] = 0;
+	end;
+	
+	last_idx += new_periods;
+	prev_equity = Equity[1];
+end;
+
+var: intrabarpersist calculated(False);
+if CalculateRatio and not calculated then begin
+	once calculated = True;
+
+	if 0 = new_periods and 0 <> i_MarketPosition then begin
+		last_idx += 1;
+		array_setmaxindex(periods_returns, last_idx);
+		periods_returns[last_idx] = Equity - prev_equity;
+	end;
+
+	RemoveLastZeros(periods_returns, last_idx);
+		
+	array_setmaxindex(periods_return_percent, last_idx);
+
+	CummRatio(periods_returns, periods_return_percent, last_idx, InitCapital);
+	
+	var: AvgReturnPercent(0), ReturnStdDev(0);
+	AvgReturnPercent = AverageArray( periods_return_percent, last_idx );
+	ReturnStdDev= StandardDevArray( periods_return_percent, last_idx, 0 );
+
+	if 0 <> ReturnStdDev then 
+		SharpeRatio = (AvgReturnPercent- int_rate_per_period) / ReturnStdDev;
+end;

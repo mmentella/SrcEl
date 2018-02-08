@@ -1,0 +1,14 @@
+Inputs: kl(NumericSimple),ks(NumericSimple),alphal(NumericSimple),alphas(NumericSimple),_oUpper(NumericRef),_oLower(NumericRef);
+
+vars: ih(0),il(0),itr(0),var0(0);
+
+MM.ITrend(h,alphal,ih,var0);
+MM.ITrend(truerange,alphal,itr,var0);
+
+_oUpper = ih + kl*itr;
+
+MM.ITrend(l,alphas,il,var0);
+MM.ITrend(truerange,alphas,itr,var0);
+
+_oLower = il - ks*itr;
+

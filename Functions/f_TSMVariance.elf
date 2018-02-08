@@ -1,0 +1,12 @@
+[LegacyColorValue = TRUE];
+
+{ TSMVariance : also Mean Deviation, the central tendency
+  Copyright 1998-2004, PJ Kaufman. All rights reserved }
+
+	inputs: price(numericseries), length(numericsimple);
+	vars:	n(0), dev(0);
+
+	n = length;
+	if currentbar < length then n = currentbar;
+	dev = absvalue(price - average(price,n));
+	TSMVariance = average(dev,n);

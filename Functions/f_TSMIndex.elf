@@ -1,0 +1,28 @@
+[LegacyColorValue = TRUE];
+
+{ TSMIndex : create an index series
+  Copyright 1994-2004, PJKaufman. All rights reserved }
+
+  Inputs:	type(numericsimple), price(numericseries);
+  Vars:		factor(0), value(0), pvalue(0), par(800), index(0);
+
+{ type		0, normal price; 1, reverse forex; 2, bond (rev to yield)
+  price		current market price
+  pindex		previous index value
+  par			par value of bonds (e.g., 8% = 800 for whole number yield }
+
+	if currentbar = 1 then index = 100
+		else begin
+{ reverse direction if Australian dollar or British pound }
+			factor = 1;
+			if type = 1 then factor = -1;
+			value = price;
+			pvalue = price[1];
+{ change to yield }
+			if type = 2 then begin
+				value = par/price;
+				pvalue = par / price[1];
+				end;
+			index = index[1] + factor*(value*100 / pvalue - 100);
+			end;
+	TSMIndex = index;

@@ -1,0 +1,40 @@
+[LegacyColorValue = TRUE];
+
+{TSMMedian: The middle value of a series
+  Copyright 1998-2004, PJ Kaufman. All rights reserved
+  Note: If there are an even number of values in the series, then
+		the average of the two middle values will be returned }
+
+{ NOTE: Because it is calculation-intensive, this program may cause a long wait.  It
+  is strongly suggested that you first plot a short interval (of six months) with
+  a median length less than 50 to estimate how long it takes to finish the calculations. }
+
+	inputs: price(numericseries), length(numericsimple);
+	vars:	n(0), ix(0), iy(0), save(0);
+	array: sort[500](0);
+
+	TSMMedian = 0;
+	n = length;
+	if currentbar < length then n = currentbar;
+	if length = 1 then TSMMedian = price;
+	if length <= 500 and length > 1 then begin
+{ sort the values in a new series }
+		for ix = 0 to n-1 begin
+			sort[ix] = price[ix];
+			end;
+		for ix = 0 to n-2 begin
+			for iy = 1 to n-1 begin
+				if sort[ix] > sort[iy] then begin
+					save = sort[ix];
+					sort[ix] = sort[iy];
+					sort[iy] = save;
+					end;
+				end;
+			end;
+		ix = @intportion(n/2);
+		if @Mod(n,2) = 1 then
+				TSMMedian = sort[ix]
+			else
+				TSMMedian = (sort[ix] + sort[ix-1]) / 2;
+		end;
+

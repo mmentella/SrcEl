@@ -1,0 +1,10 @@
+
+Inputs: Value[MaxSize](NumericArray), Length(NumericSimple);
+
+Vars: min(0), cnt(0), len(0);
+
+min = Value[0]; len = Length - 1;
+for cnt = 1 to len begin
+	if Value[cnt] < min then min = Value[cnt]; end;
+
+gd.LowestArray = min;

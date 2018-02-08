@@ -1,0 +1,15 @@
+Inputs: _Symbol(StringSimple), _Account(StringSimple);
+Variables: _averagePrice(0);
+
+begin
+
+GetPositionAveragePrice = 0;
+for value1 = 1 to tm_positions_count begin
+	if 	_Symbol = tm_position_str_value(value1, 2000) and 
+		_Account = tm_position_str_value(value1, 2001) then begin
+		GetPositionAveragePrice = tm_position_num_value(value1, 1001);
+		break;
+	end;
+end; 
+
+end

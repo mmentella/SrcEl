@@ -1,0 +1,12 @@
+[LegacyColorValue = true]; 
+
+{*****************************************
+Function - VForce
+*****************************************}
+Vars: TSum(0), Trend(0), DM(0), CM(0); 
+TSum = High + Low + Close; 
+IF TSum > TSum[1] Then Trend = 1 
+Else Trend = -1;
+IF Trend = Trend[1] Then CM = CM + Range 
+Else CM = Range + Range[1];
+IF CM <> 0 Then VForce = Volume * AbsValue(2 * (DM/CM) -1) * Trend * 100;

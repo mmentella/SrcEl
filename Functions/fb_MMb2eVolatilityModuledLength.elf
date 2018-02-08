@@ -1,0 +1,17 @@
+Inputs: Price(Numericseries);
+Inputs: MaxLength(NumericSimple),MinLength(NumericSimple),MinBound(NumericSimple),MaxBound(NumericSimple);
+
+vars: std(0),k(0),n(0);
+
+k   = Price - Price[1];
+std = StdDev(k,MaxLength);
+
+if std <> 0 then begin
+ if MinBound < k/std and k/std < MaxBound then
+  n = (MaxLength - MinLength)*(k/std - MinBound)/(MaxBound - MinBound) + MinLength;
+ 
+ if k/std <= MinBound then n = MaxLength;
+ if k/std >= MaxBound then n = MinLength;
+end else n = MaxBound;
+
+MM.VolatilityModuledLength = n;

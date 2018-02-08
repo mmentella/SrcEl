@@ -1,0 +1,68 @@
+Inputs: NumStep(NumericSimple);
+//inputs: StartTime(NumericSimple),CurTime(NumericSimple),StepMin(NumericSimple),NumStep(NumericRef);
+
+//TPOSym(StartTime,CurTime,StepMin);
+
+Variables: Sym("");
+
+//NumStep = IntPortion((TimeToMinutes(CurTime)-TimeToMinutes(StartTime))/StepMin)+1;
+ //Print("N= ",NumStep); 
+//Print("CTM= ",TimeToMinutes(CurTime)," STM= ",TimeToMinutes(StartTime)," NumStep ",NumStep );
+Sym = "";
+switch(NumStep) begin
+     //case 0 : Print(PrintDT(Date data2,Time data2)," >> ??  ",NUMSTEP);;
+     case 1 : Sym = "A";
+     case 2 : Sym = "B";
+     case 3 : Sym = "C";
+     case 4 : Sym = "D";
+     case 5 : Sym = "E";
+     case 6 : Sym = "F";
+     case 7 : Sym = "G";
+     case 8 : Sym = "H";
+     case 9 : Sym = "I";
+     case 10 : Sym = "J";
+     case 11 : Sym = "K";
+     case 12 : Sym = "L";
+     case 13 : Sym = "O";
+     case 14 : Sym = "M";
+     case 15 : Sym = "N";
+     case 16 : Sym = "P";
+     case 17 : Sym = "Q";
+     case 18 : Sym = "R";
+     case 19 : Sym = "S";
+     case 20 : Sym = "T";
+     case 21 : Sym = "U";
+     case 22 : Sym = "V";
+     case 23 : Sym = "W";
+     case 24 : Sym = "X";
+     case 25 : Sym = "Y";
+     case 26 : Sym = "Z";
+     case 27 : Sym = "a";
+     case 28 : Sym = "b";
+     case 29 : Sym = "c";
+     case 30 : Sym = "d";
+     case 31 : Sym = "e";
+     case 32 : Sym = "f";
+     case 33 : Sym = "g";
+     case 34 : Sym = "h";
+     case 35 : Sym = "i";
+     case 36 : Sym = "j";
+     case 37 : Sym = "k";
+     case 38 : Sym = "l";
+     case 39 : Sym = "o";
+     case 40 : Sym = "m";
+     case 41 : Sym = "n";
+     case 42 : Sym = "p";
+     case 43 : Sym = "q";
+     case 44 : Sym = "r";
+     case 45 : Sym = "s";
+     case 46 : Sym = "t";
+     case 47 : Sym = "u";
+     case 48 : Sym = "v";
+     case 49 : Sym = "w";
+     case 50 : Sym = "x";
+     case 51 : Sym = "y";
+     case 52 : Sym = "z";
+end;
+
+TPOSym = Sym;

@@ -1,0 +1,11 @@
+Inputs: Price(NumericSeries),alpha(NumericSimple);
+
+vars: smooth(0),cycle(0);
+
+smooth = (price + 2*price[1] + 2*price[2] + price[3])/6;
+
+cycle = (1-.5*alpha)*(1-.5*alpha)*(smooth - 2*smooth[1] + smooth[2]) + 2*(1-alpha)*cycle[1] - (1-alpha)*(1-alpha)*cycle[2];
+
+if currentbar < 7 then cycle = (price - 2*price[1] + price[2])/4;
+
+MM.Cycle = cycle;

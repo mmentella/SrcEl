@@ -1,0 +1,19 @@
+Inputs: Value(NumericSimple),MM.MCP(NumericSimple);
+
+if marketposition <> 0 then begin
+
+ if marketposition = 1 then begin
+  
+  if c > entryprice + (MM.MCP - value/bigpointvalue) then MM.TrailingStop = entryprice + (MM.MCP - value/bigpointvalue)
+  else MM.TrailingStop = c - 1 point;
+  
+ end;
+ 
+ if marketposition = -1 then begin
+  
+  if c < entryprice - (MM.MCP - value/bigpointvalue) then MM.TrailingStop = entryprice - (MM.MCP - value/bigpointvalue)
+  else MM.TrailingStop = c + 1 point;
+  
+ end;
+
+end else MM.TrailingStop = -1;

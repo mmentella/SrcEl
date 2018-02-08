@@ -1,0 +1,23 @@
+{************************************************************************
+                      ADAPTIVE AVERAGE TRUE RANGE
+*************************************************************************}
+Input: Period(NumericSimple);
+
+Vars: Noise(0), Signal(0), Diff(0), efRatio(0), Smooth(1), Fastest(.6667), Slowest(.0645), AdaptATR(0);
+
+Diff = absvalue(TrueRange - TrueRange[1]);
+
+if currentbar <= Period then AdaptATR = TrueRange;
+
+if currentbar > Period then begin
+
+ Signal   = absvalue(TrueRange - TrueRange[Period]);
+ Noise    = Summation(Diff, Period);
+ efRatio  = Signal / Noise;
+ Smooth   = Power(efRatio * (Fastest - Slowest) + Slowest, 2);
+ 
+ AdaptATR = AdaptATR[1] + Smooth * (TrueRange - AdaptATR[1]);
+
+end;
+
+AATR = AdaptATR;

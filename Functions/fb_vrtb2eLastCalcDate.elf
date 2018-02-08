@@ -1,0 +1,34 @@
+[LegacyColorValue = TRUE];
+
+{
+Type : User Function (Numeric / Date)
+Name : vrt.LastCalcDate
+Notes: 
+
+
+EasyLanguage translation provided
+  by Samuel K. Tennis
+  of Vista-Research (c) 1998, 1999, 2000, 2001, 2002
+
+  Any unauthorized use of this material may constitute
+  a violation of U.S. and International Copyright Laws.
+}
+
+Vars  : Return (00) ;
+
+Return = @JulianToDate (@LastCalcJDate) ;
+
+vrt.LastCalcDate = Return ;
+
+{
+Custom Programming Services provided by:
+
+               Samuel K. Tennis
+                Vista-Research
+             129 Staff Drive, NE
+        Ft. Walton Beach, Florida 32548
+         voice :    1(850) 243-5105
+         fax   :    1(850) 301-2884
+         eMail :  skt@vista-research.com
+           http://www.vista-research.com
+}

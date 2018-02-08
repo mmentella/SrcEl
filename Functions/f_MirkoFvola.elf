@@ -1,0 +1,28 @@
+[LegacyColorValue = TRUE];
+
+{***************************************
+
+Written by: Emi 31gen05
+
+ Description: Ritorno il valore del Mirkoindicator (ampiezza bande)
+
+****************************************}
+
+
+variable: index(10);
+variable: mm(10);
+variable: highband(10);
+variable: lowband(10);
+variable: central(10);
+variable: mmwidth(10);
+variable: longterm(10),return(0);
+variable: lenght(20);
+
+central=average(C,lenght);
+highband = central + 2*StdDev(C,lenght);
+lowband = central - 2*StdDEv(C,lenght);
+mmwidth = highband - lowband;
+mm = Xaverage(mmwidth,5);
+longterm = Xaverage(mmwidth,200);
+return = mmwidth;
+MirkoFvola=return;

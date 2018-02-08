@@ -1,0 +1,40 @@
+Input: Sector(StringSimple);
+
+DEFINEDLLFUNC: "DLL\MCMessageCenter.dll", void, "SendCommand",string;
+
+array: var1[1](0),var2[2]("");
+{***************************}
+{***************************}
+var1[0] = MM.DailyRunup;
+{***************************}
+{***************************}
+if currentbar = 1 then begin
+
+ if sector = "metals" or sector = "equity" or sector = "agriculture" or
+    sector = "energy" or sector = "forex" or sector = "interestrates" then
+    
+    var2[0] = sector
+   
+ else var2[0] = "group";
+ 
+ var2[1] = getstrategyname;
+ var1[1] = StrLen(getstrategyname);
+end;
+{***************************}
+{***************************}
+if getappinfo(airealtimecalc) = 1 or (LastBarOnChart and getappinfo(aioptimizing) = 0) then begin  
+
+SendCommand("REGISTER?id=" + var2[1] + ";" + "len=" + NumToStr(var1[1],0) + ";" +
+                       "group=" + var2[0] + ";" +
+                       "|" + 
+                       "UPDATE?id=" + var2[1] + ";" + "len=" + NumToStr(var1[1],0) + ";" +
+                       "marketposition=" + NumToStr(i_marketposition,0) +  ";" +
+                       "brokerposition=" + NumToStr(i_MarketPosition_at_Broker_for_The_Strategy,0) +  ";" +
+                       "positionprofit=" + NumToStr(i_OpenEquity - i_ClosedEquity,2) +  ";" +
+                       "daily=" + NumToStr(var1[0],2) +  ";" +
+                       "autotrading=" + IffString(getappinfo(aistrategyauto)=1,"Yes","No") +  ";" +
+                       "symbol=" + getsymbolname +  ";" +
+                       "|");
+end;
+{***************************}
+{***************************}

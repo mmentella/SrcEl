@@ -1,0 +1,14 @@
+Input: _AccountID(StringSimple);
+Variables: _numPositions(0);
+
+begin
+
+_numPositions = 0;
+for value1 = 1 to tm_positions_count begin
+   if _AccountID = tm_position_str_value(value1, 2001) then
+   	// If the position's account matches the one requested
+   	_numPositions = _numPositions + 1;
+end; 
+
+GetNumPositions = _numPositions;
+end

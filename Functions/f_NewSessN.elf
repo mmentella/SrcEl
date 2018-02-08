@@ -1,0 +1,11 @@
+Inputs: ResNum(NumericSimple),SessNum(NumericRef);
+var: intrabarpersist csn(0);
+
+
+csn = CurrSessionNum(ResNum);
+if csn > 0 and SessNum <> csn then begin
+	NewSessN = true;
+end else begin
+	NewSessN = false;
+end;
+SessNum = csn;
